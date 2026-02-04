@@ -8,7 +8,7 @@ from shap_interpreter import interpret_shap
 from safety import collect_safety_warnings
 from risk_card import build_risk_card
 from audit import build_audit_block
-from model_loader import get_model_performance_metrics
+from .model_loader import get_model_performance_metrics
 
 CLINICAL_PRIORITY = {
     "high_bp": 1,

@@ -3,7 +3,7 @@ from fastapi import FastAPI
 import pandas as pd
 
 from schemas import PatientInput, PredictionResponse
-from model_loader import load_model
+from .model_loader import load_model
 from risk_logic import (
     categorize_risk,
     assess_prediction_confidence
@@ -16,7 +16,7 @@ from shap_explainer import (
 from risk_card import build_risk_card
 from safety import collect_safety_warnings
 from localization import t
-from .shap_interpreter import interpret_shap
+from shap_interpreter import interpret_shap
 from risk_logic import (
     categorize_risk,
     assess_prediction_confidence,

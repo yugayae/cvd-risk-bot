@@ -1,6 +1,6 @@
 import numpy as np
-from .localization import LOCALIZATION
-from .clinical_expectations import CLINICAL_FACTOR_RISK
+from localization import LOCALIZATION
+from clinical_expectations import CLINICAL_FACTOR_RISK
 
 CLINICAL_ONLY_FEATURES = {
     "cholesterol"
