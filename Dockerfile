@@ -31,4 +31,4 @@ ENV RATE_LIMIT_MINUTES=1
 EXPOSE 8000
 
 # Скрипт запуска (запускает API и бота одновременно)
-CMD ["sh", "-c", "uvicorn cvd-risk-api.app.main:app --host 0.0.0.0 --port 8000 & python bot/bot_main.py"]
+CMD ["sh", "-c", "PYTHONPATH=/app/cvd-risk-api uvicorn app.main:app --app-dir cvd-risk-api --host 0.0.0.0 --port 8000 & python bot/bot_main.py"]
