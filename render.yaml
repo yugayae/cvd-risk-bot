@@ -1,0 +1,20 @@
+services:
+  # Telegram Bot + API в одном сервисе
+  - type: web
+    name: cvd-risk-bot
+    env: docker
+    region: singapore
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: API_URL
+        value: http://localhost:8000/predict
+      - key: DAILY_LIMIT
+        value: 10
+      - key: RATE_LIMIT_MINUTES
+        value: 1
+      - key: PORT
+        value: 8000
+    healthCheckPath: /

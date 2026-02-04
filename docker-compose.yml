@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  cvd-bot:
+    build: .
+    container_name: cvd_risk_bot
+    restart: unless-stopped
+    environment:
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - API_URL=http://localhost:8000/predict
+      - DAILY_LIMIT=10
+      - RATE_LIMIT_MINUTES=1
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      # Сохраняем данные пользователей между перезапусками
+      - ./bot_users.json:/app/bot_users.json

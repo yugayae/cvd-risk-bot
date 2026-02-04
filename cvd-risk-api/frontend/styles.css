@@ -1,0 +1,768 @@
+/* ===============================
+   MEDICAL THEME - MINIMALIST
+   Color Palette:
+   - Primary: #2C5F7C (Medical Blue)
+   - Secondary: #4A90A4 (Soft Teal)
+   - Accent: #6B9FA8 (Light Blue-Gray)
+   - Success: #5A8A7C (Sage Green)
+   - Warning: #B8860B (Muted Gold)
+   - Error: #8B4A4A (Muted Red)
+   - Background: #F8FAFB (Soft White)
+   - Text: #2C3E50 (Dark Gray-Blue)
+================================ */
+
+/* ===============================
+   BASE & TYPOGRAPHY
+================================ */
+
+:root {
+    --medical-primary: #2C5F7C;
+    --medical-secondary: #4A90A4;
+    --medical-accent: #6B9FA8;
+    --medical-success: #5A8A7C;
+    --medical-warning: #B8860B;
+    --medical-error: #8B4A4A;
+    --medical-bg: #F8FAFB;
+    --medical-bg-card: #FFFFFF;
+    --medical-text: #2C3E50;
+    --medical-text-light: #6C7A89;
+    --medical-border: #E1E8ED;
+    --medical-border-light: #F0F4F7;
+    
+    /* Risk colors - muted medical palette */
+    --risk-high: #8B4A4A;
+    --risk-high-bg: #FAF5F5;
+    --risk-moderate: #B8860B;
+    --risk-moderate-bg: #FDFBF5;
+    --risk-low: #5A8A7C;
+    --risk-low-bg: #F5FAF8;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", 
+                 "Roboto", "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--medical-bg);
+    margin: 0;
+    padding: 0;
+    color: var(--medical-text);
+    line-height: 1.6;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 24px;
+}
+
+/* ===============================
+   HEADINGS
+================================ */
+
+h1 {
+    text-align: center;
+    margin-bottom: 32px;
+    font-size: 2rem;
+    font-weight: 500;
+    color: var(--medical-primary);
+    letter-spacing: -0.02em;
+}
+
+h2 {
+    margin: 0 0 16px 0;
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--medical-primary);
+    letter-spacing: -0.01em;
+}
+
+h3 {
+    margin: 0 0 12px 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--medical-text);
+}
+
+h4 {
+    margin: 0 0 8px 0;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--medical-text);
+}
+
+/* ===============================
+   LANGUAGE SWITCHER
+================================ */
+
+.language-switcher {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 24px;
+}
+
+.language-switcher label {
+    display: none;
+}
+
+.language-switcher select {
+    padding: 8px 16px;
+    font-size: 0.875rem;
+    border-radius: 6px;
+    border: 1px solid var(--medical-border);
+    background: var(--medical-bg-card);
+    color: var(--medical-text);
+    width: auto;
+    min-width: 140px;
+    cursor: pointer;
+}
+
+.language-switcher select:hover {
+    border-color: var(--medical-accent);
+}
+
+.language-switcher select:focus {
+    outline: none;
+    border-color: var(--medical-primary);
+    box-shadow: 0 0 0 3px rgba(44, 95, 124, 0.1);
+}
+
+/* ===============================
+   MAIN LAYOUT
+================================ */
+
+.main-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 32px;
+    align-items: flex-start;
+}
+
+.form-column,
+.result-column {
+    min-width: 0;
+}
+
+/* ===============================
+   FORM
+================================ */
+
+form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px 24px;
+    grid-template-areas:
+        "age        systolic"
+        "bmi        diastolic"
+        "bmi        cholesterol"
+        "bmi        glucose"
+        "gender     smoking"
+        "alcohol    active"
+        "button     button";
+}
+
+.age { grid-area: age; }
+.systolic { grid-area: systolic; }
+.diastolic { grid-area: diastolic; }
+.bmi { grid-area: bmi; }
+.cholesterol { grid-area: cholesterol; }
+.glucose { grid-area: glucose; }
+.gender { grid-area: gender; }
+.smoking { grid-area: smoking; }
+.alcohol { grid-area: alcohol; }
+.active { grid-area: active; }
+.button { grid-area: button; }
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.form-group.full {
+    grid-column: span 2;
+}
+
+.form-group label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--medical-text);
+    margin-bottom: 6px;
+}
+
+.form-group label:not(:first-child) {
+    margin-top: 12px;
+}
+
+input[type="number"],
+input[type="text"],
+select {
+    width: 100%;
+    padding: 10px 12px;
+    margin-top: 4px;
+    font-size: 0.9375rem;
+    border-radius: 6px;
+    border: 1px solid var(--medical-border);
+    background: var(--medical-bg-card);
+    color: var(--medical-text);
+}
+
+input[type="number"]:focus,
+input[type="text"]:focus,
+select:focus {
+    outline: none;
+    border-color: var(--medical-primary);
+    box-shadow: 0 0 0 3px rgba(44, 95, 124, 0.1);
+}
+
+input[type="number"]:hover,
+input[type="text"]:hover,
+select:hover {
+    border-color: var(--medical-accent);
+}
+
+input[readonly] {
+    background-color: var(--medical-bg);
+    cursor: not-allowed;
+}
+
+select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%232C5F7C' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+}
+
+.radio-group {
+    display: flex;
+    gap: 24px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+
+.radio-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 400;
+    cursor: pointer;
+    margin: 0;
+}
+
+.radio-group input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    cursor: pointer;
+    accent-color: var(--medical-primary);
+}
+
+.button-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
+}
+
+button {
+    max-width: 280px;
+    width: 100%;
+    padding: 14px 24px;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    background-color: var(--medical-primary);
+    color: white;
+    letter-spacing: 0.01em;
+}
+
+button:hover:not(:disabled) {
+    background-color: #234A5F;
+}
+
+button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+button:disabled {
+    background-color: var(--medical-accent);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* ===============================
+   CARDS
+================================ */
+
+.card {
+    background: var(--medical-bg-card);
+    border-radius: 12px;
+    padding: 28px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--medical-border-light);
+}
+
+.card:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+#result {
+    width: 100%;
+}
+
+.result-column {
+    min-height: 300px;
+}
+
+/* ===============================
+   RISK LEVELS
+================================ */
+
+.risk-high {
+    border-left: 4px solid var(--risk-high);
+    background-color: var(--risk-high-bg);
+}
+
+.risk-moderate {
+    border-left: 4px solid var(--risk-moderate);
+    background-color: var(--risk-moderate-bg);
+}
+
+.risk-low {
+    border-left: 4px solid var(--risk-low);
+    background-color: var(--risk-low-bg);
+}
+
+.risk-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.risk-high .risk-dot {
+    background-color: var(--risk-high);
+}
+
+.risk-moderate .risk-dot {
+    background-color: var(--risk-moderate);
+}
+
+.risk-low .risk-dot {
+    background-color: var(--risk-low);
+}
+
+/* ===============================
+   LISTS
+================================ */
+
+ul {
+    padding-left: 20px;
+    margin: 0;
+}
+
+li {
+    margin-bottom: 10px;
+    line-height: 1.6;
+    color: var(--medical-text);
+}
+
+/* ===============================
+   CONFIDENCE BADGES
+================================ */
+
+.confidence-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin: 12px 0;
+}
+
+.confidence-high {
+    background-color: #F0F7F5;
+    color: var(--medical-success);
+}
+
+.confidence-moderate {
+    background-color: #FDFBF5;
+    color: var(--medical-warning);
+}
+
+.confidence-low {
+    background-color: #FAF5F5;
+    color: var(--medical-error);
+}
+
+.confidence-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: currentColor;
+}
+
+/* ===============================
+   PATIENT REPORT
+================================ */
+
+.patient-report {
+    margin-bottom: 24px;
+}
+
+.patient-risk-value {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--medical-primary);
+    margin: 16px 0;
+}
+
+.patient-risk-value strong {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--medical-primary);
+}
+
+.patient-risk-meaning {
+    color: var(--medical-text-light);
+    margin: 12px 0;
+}
+
+.patient-risk-note {
+    font-size: 0.875rem;
+    color: var(--medical-text-light);
+    margin-top: 12px;
+}
+
+.patient-warning {
+    color: var(--medical-error);
+    font-weight: 500;
+    padding: 12px;
+    background-color: var(--risk-high-bg);
+    border-radius: 6px;
+    border-left: 4px solid var(--medical-error);
+}
+
+/* ===============================
+   DOCTOR REPORT
+================================ */
+
+.doctor-report {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.doctor-section {
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--medical-border-light);
+}
+
+.doctor-section:last-of-type {
+    border-bottom: none;
+}
+
+.doctor-section h3 {
+    color: var(--medical-primary);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--medical-border-light);
+}
+
+.doctor-section ul {
+    margin-top: 8px;
+}
+
+.doctor-section p {
+    color: var(--medical-text);
+    line-height: 1.7;
+    margin: 8px 0;
+}
+
+/* ===============================
+   WARNINGS & SAFETY
+================================ */
+
+.risk-warning {
+    background-color: #FFF9E6;
+    border-left: 4px solid var(--medical-warning);
+    margin-bottom: 24px;
+}
+
+.risk-warning h2 {
+    color: var(--medical-warning);
+    font-size: 1.25rem;
+}
+
+.error-warning {
+    background-color: var(--risk-high-bg);
+    border-left: 4px solid var(--medical-error);
+}
+
+.error-warning h2 {
+    color: var(--medical-error);
+}
+
+/* ===============================
+   MODEL SCOPE INFO
+================================ */
+
+.model-scope-info {
+    background-color: var(--medical-bg);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 24px;
+    border: 1px solid var(--medical-border-light);
+}
+
+.model-scope-info h4 {
+    color: var(--medical-primary);
+    margin-bottom: 12px;
+}
+
+.model-scope-text {
+    font-size: 0.875rem;
+    color: var(--medical-text-light);
+    margin-bottom: 16px;
+    line-height: 1.6;
+}
+
+.model-scope-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.model-scope-table th {
+    text-align: left;
+    padding: 10px 12px;
+    font-weight: 500;
+    color: var(--medical-text);
+    border-bottom: 1px solid var(--medical-border);
+}
+
+.model-scope-table td {
+    padding: 10px 12px;
+    color: var(--medical-text-light);
+    border-bottom: 1px solid var(--medical-border-light);
+}
+
+.model-scope-table tr:last-child td {
+    border-bottom: none;
+}
+
+.model-limitations-warning {
+    color: var(--medical-warning);
+    font-weight: 500;
+    margin-bottom: 12px;
+    font-size: 0.9375rem;
+}
+
+/* ===============================
+   DOCTOR ACTIONS
+================================ */
+
+.doctor-actions {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--medical-border-light);
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+.doctor-actions button,
+#exportDoctorJSON {
+    max-width: none;
+    padding: 10px 20px;
+    font-size: 0.875rem;
+    background-color: var(--medical-secondary);
+}
+
+.doctor-actions button:hover:not(:disabled),
+#exportDoctorJSON:hover:not(:disabled) {
+    background-color: #3A7A8C;
+}
+
+/* ===============================
+   CLINICAL CONDITIONS
+================================ */
+
+.clinical-conditions-list li {
+    margin-bottom: 12px;
+    padding-left: 4px;
+}
+
+.condition-note {
+    font-size: 0.875rem;
+    color: var(--medical-text-light);
+    margin-top: 6px;
+    font-style: italic;
+}
+
+/* ===============================
+   ANIMATIONS - REMOVED FOR PROFESSIONAL APPEARANCE
+================================ */
+
+/* ===============================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 968px) {
+    .main-layout {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .result-column {
+        margin-top: 0;
+    }
+    
+    .container {
+        padding: 24px 16px;
+    }
+    
+    h1 {
+        font-size: 1.75rem;
+    }
+    
+    form {
+        gap: 16px 20px;
+    }
+}
+
+@media (max-width: 640px) {
+    .container {
+        padding: 16px 12px;
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+        margin-bottom: 24px;
+    }
+    
+    .card {
+        padding: 20px;
+    }
+    
+    form {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "age"
+            "systolic"
+            "diastolic"
+            "bmi"
+            "cholesterol"
+            "glucose"
+            "gender"
+            "smoking"
+            "alcohol"
+            "active"
+            "button";
+    }
+    
+    .radio-group {
+        gap: 16px;
+    }
+    
+    button {
+        max-width: 100%;
+    }
+}
+
+/* ===============================
+   PRINT STYLES
+================================ */
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    .doctor-report,
+    .doctor-report * {
+        visibility: visible;
+    }
+
+    .doctor-report {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        box-shadow: none;
+        border: none;
+    }
+
+    .doctor-actions,
+    .language-switcher,
+    .model-scope-info {
+        display: none;
+    }
+    
+    .card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+}
+
+/* =============================== 
+   RISK GAUGE ANIMATIONS
+================================ */
+
+.risk-gauge {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.doctor-gauge {
+    margin: 10px 0;
+}
+
+.risk-gauge-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.doctor-gauge .risk-gauge-circle {
+    width: 80px;
+    height: 80px;
+}
+
+.risk-gauge-circle.animated {
+}
+
+.risk-gauge-text {
+    text-align: center;
+    color: inherit;
+}
+
+.risk-percentage {
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.doctor-gauge .risk-percentage {
+    font-size: 14px;
+}
+
+.risk-label {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 2px;
+}

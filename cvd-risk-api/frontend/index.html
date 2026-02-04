@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CVD Risk Card</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="container">
+    <div class="language-switcher">
+        <label for="ui_language">Language:</label>
+        <select id="ui_language">
+            <option value="en">English</option>
+            <option value="ru">Русский</option>
+            <option value="kr">한국어</option>
+        </select>
+    </div>
+
+    <h1>Cardiovascular Risk Assessment</h1>
+    <div class="main-layout">
+
+        <div class="form-column">
+            <!-- FORM -->
+            <form id="risk-form">
+
+                <div class="form-group age">
+                    <label>Age (years)</label>
+                    <input type="number" id="age_years" name="age_years" min="18" max="100" required>
+                </div>
+
+                <div class="form-group systolic">
+                    <label>Systolic BP (mmHg)</label>
+                    <input type="number" id="ap_hi" name="ap_hi" min="90" max="220" required>
+                </div>
+
+                <div class="form-group diastolic">
+                    <label>Diastolic BP (mmHg)</label>
+                    <input type="number" id="ap_lo" name="ap_lo" min="50" max="140" required>
+                </div>
+
+                <div class="form-group bmi">
+                    <label> 
+                        Height (cm)
+                        <input type="number" id="height_cm" min="140" max="220">
+                    </label>
+
+                    <label>
+                        Weight (kg)
+                        <input type="number" id="weight_kg" min="40" max="200">
+                    </label>
+
+                    <label>
+                        BMI
+                        <input type="number" id="bmi" name="bmi" step="0.1" readonly required>
+                    </label>
+                </div>
+
+                <div class="form-group cholesterol">
+                    <label>
+                        Cholesterol level
+                        <select name="cholesterol" required>
+                            <option value="">Select</option>
+                            <option value="1">Normal</option>
+                            <option value="2">Above normal</option>
+                            <option value="3">High</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="form-group glucose">
+                    <label>
+                        Glucose level
+                        <select name="gluc" required>
+                            <option value="">Select</option>
+                            <option value="1">Normal</option>
+                            <option value="2">Above normal</option>
+                            <option value="3">High</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="form-group gender">
+                    <label>Gender</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" id="gender_1" name="gender" value="1" required>
+                            Female
+                        </label>
+                        <label>
+                            <input type="radio" id="gender_2" name="gender" value="2">
+                            Male
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group smoking">
+                    <label>Smoking</label>
+                        <div class="radio-group">
+                        <label>
+                            <input type="radio" name="smoke" value="1" required>
+                            Yes
+                        </label>
+                        <label>
+                            <input type="radio" name="smoke" value="0">
+                            No
+                        </label>
+                        </div>
+
+                </div>
+
+                <div class="form-group alcohol">
+                    <label>Alcohol</label>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" name="alco" value="1" required>
+                            Yes
+                            </label>
+                            <label>
+                                <input type="radio" name="alco" value="0">
+                            No
+                            </label>
+                        </div>
+                </div>
+
+                <div class="form-group active">
+                    <label>Physically active</label>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" name="active" value="1" required>
+                            Yes
+                            </label>
+                            <label>
+                                <input type="radio" name="active" value="0">
+                            No
+                            </label>
+                        </div>
+                </div>
+
+                <div class="button-wrapper button">
+                    <button type="submit">Assess Risk</button>
+                </div>
+            </form>
+        </div> 
+        <div class="result-column">
+            <div id="result">
+                <!-- Patient short report -->
+                <div class="patient-report card">
+                    <h2 data-i18n="patient_title"></h2>
+                    <p data-i18n="patient_intro"></p>
+                </div>
+                <div class="model-scope-info">
+                    <h4 data-i18n="model_scope_title"></h4>
+
+                    <p class="model-scope-text" data-i18n="model_scope_description"></p>
+
+                    <table class="model-scope-table">
+                        <thead>
+                            <tr>
+                                <th data-i18n="model_scope_param"></th>
+                                <th data-i18n="model_scope_range"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-i18n="model_scope_age"></td>
+                                <td>40–75</td>
+                            </tr>
+                            <tr>
+                                <td data-i18n="model_scope_bmi"></td>
+                                <td>18.5 – 30 kg/m²</td>
+                            </tr>
+                            <tr>
+                                <td data-i18n="model_scope_sbp"></td>
+                                <td>90 – 180 mmHg</td>
+                            </tr>
+                            <tr>
+                                <td data-i18n="model_scope_dbp"></td>
+                                <td>60 – 110 mmHg</td>
+                            </tr>
+                            <tr>
+                                <td data-i18n="model_scope_cholesterol"></td>
+                                <td>Normal / Elevated</td>
+                            </tr>
+                            <tr>
+                                <td data-i18n="model_scope_glucose"></td>
+                                <td>Normal / Elevated</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+            <!-- Doctor report (A5 – static layout) -->
+            <div class="doctor-report card">
+
+                <h2>Clinical Risk Assessment (Doctor View)</h2>
+                <div id="doctor-risk-gauge"></div>
+                <div class="doctor-section patient-summary" data-section="patient">
+                    <h3>Patient data summary</h3>
+                    <ul></ul>
+                </div>
+                <section class="doctor-section" id="doctor-model-output" data-section="model">
+                    <h3>Model output (clinical)</h3>
+                    <ul>
+                        <li>Predicted cardiovascular disease risk: —</li>
+                        <li>Risk category: —</li>
+                        <li>Prediction confidence: —</li>
+                    </ul>
+                </section>
+
+                <section class="doctor-section" data-section="factors">
+                    <h3>Key contributing factors</h3>
+                    <ul></ul>
+                </section>
+
+                <section class="doctor-section" data-section="conditions">
+                    <h3>Clinical conditions</h3>
+                    <ul class="clinical-conditions-list"></ul>
+                </section>
+
+                <section class="doctor-section" data-section="interpretation">
+                    <h3>Clinical interpretation</h3>
+                    <p>
+                        This section provides a structured interpretation of the model
+                        output to support clinical decision-making.
+                    </p>
+                </section>
+
+                <section class="doctor-section" data-section="warnings">
+                    <h3>Warnings & model limitations</h3>
+                    <ul>
+                        <li>Model performance may be reduced outside training ranges</li>
+                        <li>Results should be interpreted in clinical context</li>
+                    </ul>
+                </section>
+
+                <section class="doctor-section" data-section="disclaimer">
+                    <h3>Disclaimer</h3>
+                    <p>
+                        This tool is intended for clinical decision support only and
+                        does not replace professional medical advice.
+                    </p>
+                </section>
+                <div class="doctor-actions">
+                    <button type="button" id="printDoctorReport">
+                        Print / Save Doctor Report
+                    </button>
+                </div>
+                <button type="button" id="exportDoctorJSON">
+                    Export clinical JSON
+                </button>
+            </div>
+        </div>
+    </div> 
+</div> 
+
+<script src="script.js"></script>
+</body>
+</html>
