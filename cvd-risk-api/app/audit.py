@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 import uuid
 
-from app.model_loader import get_model_version
+from model_loader import get_model_version
 
 def build_audit_block():
     return {

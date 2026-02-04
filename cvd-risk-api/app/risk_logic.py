@@ -1,14 +1,14 @@
-from app.localization import t
-from app.localization import LOCALIZATION
-from app.clinical_mapping import CLINICAL_FEATURE_MAP
+from localization import t
+from localization import LOCALIZATION
+from clinical_mapping import CLINICAL_FEATURE_MAP
 import pandas as pd
-from app.localization import t
-from app.shap_explainer import explain_patient
-from app.shap_interpreter import interpret_shap
-from app.safety import collect_safety_warnings
-from app.risk_card import build_risk_card
-from app.audit import build_audit_block
-from app.model_loader import get_model_performance_metrics
+from localization import t
+from shap_explainer import explain_patient
+from shap_interpreter import interpret_shap
+from safety import collect_safety_warnings
+from risk_card import build_risk_card
+from audit import build_audit_block
+from model_loader import get_model_performance_metrics
 
 CLINICAL_PRIORITY = {
     "high_bp": 1,

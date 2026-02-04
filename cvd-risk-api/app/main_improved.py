@@ -7,12 +7,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import time
 
-from app.core.config import settings
-from app.core.logging import logger
-from app.core.exceptions import CVDRiskException, ValidationError, ModelError
-from app.api.dependencies import get_model, get_shap_explainer
-from app.services.prediction_service import PredictionService
-from app.schemas import PatientInput, PredictionResponse
+from core.config import settings
+from core.logging import logger
+from core.exceptions import CVDRiskException, ValidationError, ModelError
+from api.dependencies import get_model, get_shap_explainer
+from services.prediction_service import PredictionService
+from schemas import PatientInput, PredictionResponse
 
 
 # Инициализация приложения
