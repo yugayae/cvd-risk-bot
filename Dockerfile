@@ -1,34 +1,30 @@
 FROM python:3.11-slim
 
-# Установка рабочей директории
 WORKDIR /app
 
-# Установка системных зависимостей
+# Системные зависимости
 RUN apt-get update && apt-get install -y \
-    gcc \
-    g++ \
-    curl \
+    gcc g++ curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Копирование requirements
+# Копируем зависимости
 COPY requirements_bot.txt .
 COPY cvd-risk-api/requirements.txt requirements_api.txt
 
-# Установка Python зависимостей
+# Устанавливаем Python пакеты
 RUN pip install --no-cache-dir -r requirements_bot.txt
 RUN pip install --no-cache-dir -r requirements_api.txt
 
-# Копирование всего проекта
+# Копируем весь проект
 COPY . .
 
-# Переменные окружения (будут переопределены в Render)
-ENV TELEGRAM_BOT_TOKEN=""
-ENV API_URL="http://localhost:8000/predict"
-ENV DAILY_LIMIT=10
-ENV RATE_LIMIT_MINUTES=1
+# Переменные окружения
+ENV PYTHONPATH=/app
+ENV PORT=8000
 
-# Expose порт для API
+# Порт
 EXPOSE 8000
 
-# Скрипт запуска (запускает API и бота одновременно)
-CMD ["sh", "-c", "PYTHONPATH=/app/cvd-risk-api uvicorn app.main:app --app-dir cvd-risk-api --host 0.0.0.0 --port 8000 & python bot/bot_main.py"]
+# ИСПРАВЛЕННЫЙ ЗАПУСК: API в фоне, затем бот на переднем плане
+CMD ["sh", "-c", "cd /app && uvicorn cvd-risk-api.app.main:app --host 0.0.0.0 --port ${PORT:-8000} & sleep 5 && python /app/bot/bot_main.py"]
+```
