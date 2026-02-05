@@ -824,10 +824,10 @@ def main():
 
     request = HTTPXRequest(
         connection_pool_size=8,
-        read_timeout=30,
-        write_timeout=30,
-        connect_timeout=30,
-        pool_timeout=30,
+        read_timeout=100,
+        write_timeout=60,
+        connect_timeout=60,
+        pool_timeout=60,
     )
 
     application = Application.builder().token(BOT_TOKEN).request(request).build()
