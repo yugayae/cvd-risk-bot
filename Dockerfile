@@ -26,6 +26,6 @@ ENV PORT=8000
 EXPOSE 8000
 
 # ИСПРАВЛЕННЫЙ ЗАПУСК: API в фоне, затем бот на переднем плане
-CMD ["sh", "-c", "export PYTHONPATH=$PYTHONPATH:/app/cvd-risk-api:/app/cvd-risk-api/app && uvicorn app.main:app --app-dir cvd-risk-api --host 0.0.0.0 --port ${PORT:-8000} & sleep 5 && python bot/bot_main.py"]
+CMD ["sh", "-c", "export PYTHONPATH=$PYTHONPATH:/app/cvd-risk-api:/app/cvd-risk-api/app && uvicorn app.main:app --app-dir cvd-risk-api --host 127.0.0.1 --port 8000 & sleep 10 && python bot/bot_main.py"]
 
 
