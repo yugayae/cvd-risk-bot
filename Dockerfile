@@ -27,4 +27,3 @@ EXPOSE 8000
 
 # ИСПРАВЛЕННЫЙ ЗАПУСК: API в фоне, затем бот на переднем плане
 CMD ["sh", "-c", "cd /app && uvicorn cvd-risk-api.app.main:app --host 0.0.0.0 --port ${PORT:-8000} & sleep 5 && python /app/bot/bot_main.py"]
-```
