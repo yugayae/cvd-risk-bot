@@ -112,7 +112,7 @@ MESSAGES = {
         "invalid_input": "⚠️ Пожалуйста, введите корректное значение.",
         
         # Результат
-        "result_header": "📊 РЕЗУЛЬТАТЫ АНАЛИЗА\n{'='*40}\n",
+        "result_header": "📊 РЕЗУЛЬТАТЫ АНАЛИЗА\n" + "=" * 40 + "\n",
         "risk_probability": "🎯 Вероятность риска: {prob}%",
         "risk_category": "📈 Категория: {category}",
         "confidence": "🔍 Достоверность: {level}\n{note}",
@@ -180,7 +180,7 @@ MESSAGES = {
         "error": "❌ An error occurred. Try again /start",
         "invalid_input": "⚠️ Please enter a valid value.",
         
-        "result_header": "📊 ANALYSIS RESULTS\n{'='*40}\n",
+        "result_header": "📊 ANALYSIS RESULTS\n" + "=" * 40 + "\n",
         "risk_probability": "🎯 Risk probability: {prob}%",
         "risk_category": "📈 Category: {category}",
         "confidence": "🔍 Confidence: {level}\n{note}",
@@ -248,7 +248,7 @@ MESSAGES = {
         "error": "❌ 오류가 발생했습니다. /start를 다시 시도하세요",
         "invalid_input": "⚠️ 올바른 값을 입력하세요.",
         
-        "result_header": "📊 분석 결과\n{'='*40}\n",
+        "result_header": "📊 분석 결과\n" + "=" * 40 + "\n",
         "risk_probability": "🎯 위험 확률: {prob}%",
         "risk_category": "📈 범주: {category}",
         "confidence": "🔍 신뢰도: {level}\n{note}",
@@ -792,16 +792,7 @@ def format_prediction_result(result: Dict, lang: str) -> str:
     # Disclaimer
     if result.get("disclaimer"):
         text += msg["disclaimer"].format(text=result["disclaimer"])
-    
-    # Метрики модели (опционально)
-    if result.get("performance_metrics"):
-        metrics = result["performance_metrics"]
-        text += msg["metrics_info"].format(
-            sensitivity=f"{metrics.get('sensitivity', 0) * 100:.1f}",
-            specificity=f"{metrics.get('specificity', 0) * 100:.1f}",
-            roc_auc=f"{metrics.get('roc_auc', 0):.3f}"
-        )
-    
+          
     return text
 
 # ==========================================
