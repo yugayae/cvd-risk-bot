@@ -28,7 +28,7 @@ from telegram.ext import (
 BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "YOUR_BOT_TOKEN_HERE")
 
 # API эндпоинт (локальный или удаленный)
-API_URL = os.getenv(ENV API_URL="http://127.0.0.1:8000/predict")
+API_URL = os.getenv("API_URL", "http://127.0.0.1:8000/predict")
 
 # Лимиты использования
 DAILY_LIMIT = int(os.getenv("DAILY_LIMIT", "10"))  # запросов в день на пользователя
