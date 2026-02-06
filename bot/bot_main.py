@@ -709,7 +709,7 @@ async def send_prediction_request(update: Update, context: ContextTypes.DEFAULT_
         response = requests.post(
             API_URL,
             json=patient_data,
-            timeout=30
+            timeout=60
         )
         
         if response.status_code == 200:
