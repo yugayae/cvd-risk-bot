@@ -27,4 +27,4 @@ ENV PORT=8000
 EXPOSE 8000
 
 # ПРАВИЛЬНЫЙ ЗАПУСК
-CMD ["sh", "-c", "uvicorn cvd-risk-api.app.main:app --host 0.0.0.0 --port 8000 & sleep 10 && python bot/bot_main.py"]
+CMD ["sh", "-c", "export PYTHONPATH=$PYTHONPATH:/app/cvd-risk-api:/app/cvd-risk-api/app && uvicorn app.main:app --app-dir cvd-risk-api --host 0.0.0.0 --port 8000 & sleep 10 && python bot/bot_main.py"]
