@@ -20,12 +20,11 @@ COPY . .
 
 # Переменные окружения
 ENV PYTHONPATH=/app
+ENV API_URL=http://127.0.0.1:8000/predict
 ENV PORT=8000
 
 # Порт
 EXPOSE 8000
 
-# ИСПРАВЛЕННЫЙ ЗАПУСК: API в фоне, затем бот на переднем плане
-CMD ["sh", "-c", "export PYTHONPATH=$PYTHONPATH:/app/cvd-risk-api:/app/cvd-risk-api/app && uvicorn app.main:app --app-dir cvd-risk-api --host 127.0.0.1 --port 8000 & sleep 10 && python bot/bot_main.py"]
-
-
+# ПРАВИЛЬНЫЙ ЗАПУСК
+CMD ["sh", "-c", "uvicorn cvd-risk-api.app.main:app --host 0.0.0.0 --port 8000 & sleep 10 && python bot/bot_main.py"]
