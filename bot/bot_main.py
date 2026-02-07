@@ -907,7 +907,10 @@ def main():
     
     # Conversation handler для сбора данных
     conv_handler = ConversationHandler(
-        entry_points=[CommandHandler("start", start)],
+        entry_points=[
+            CommandHandler("start", start),
+            MessageHandler(filters.Regex(r"^(🔄 Новый анализ|🔄 New Analysis|🔄 새 분석)$"), start)
+        ],
         states={
             LANGUAGE: [MessageHandler(filters.TEXT & ~filters.COMMAND, language_choice)],
             AGE: [MessageHandler(filters.TEXT & ~filters.COMMAND, age_input)],
@@ -935,14 +938,6 @@ def main():
         lang = context.user_data.get('language', 'ru')
         
         # Проверяем какая кнопка нажата
-        if any(keyword in text for keyword in ["🔄", "Новый анализ", "New Analysis", "새 분석"]):
-            # Очищаем старые данные пациента перед новым кругом
-            context.user_data['patient_data'] = {}
-            # Вызываем функцию старта
-            await start(update, context)
-            # ЯВНО возвращаем состояние выбора языка для ConversationHandler
-            return LANGUAGE
-        
         elif any(keyword in text for keyword in ["📊", "статистика", "Statistics", "통계"]):
             # Кнопка "Статистика"
             await stats_command(update, context)
