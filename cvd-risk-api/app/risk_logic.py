@@ -194,9 +194,18 @@ def evaluate_clinical_risk(
 
     # 3. Confidence & uncertainty layer
     confidence = assess_prediction_confidence(risk_proba)
-    confidence_block = t(lang, "confidence", confidence["confidence_level"])
-    confidence_title = confidence_block["title"]
-    confidence_note = confidence_block["note"]
+    confidence_level = confidence["confidence_level"]
+    
+    # Безопасное получение блока локализации
+    confidence_block = t(lang, "confidence", confidence_level)
+    
+    if confidence_block:
+        confidence_title = confidence_block.get("title", "Уровень достоверности")
+        confidence_note = confidence_block.get("note", "")
+    else:
+        # Резервный вариант, если локализация не найдена
+        confidence_title = "Уровень достоверности"
+        confidence_note = "Расчет произведен на основе предоставленных данных."
 
     # 4. Safety warnings
     safety_warnings = collect_safety_warnings(
@@ -287,4 +296,5 @@ def evaluate_clinical_risk(
         "audit": build_audit_block(),
         "performance_metrics": get_model_performance_metrics()
     }
+
 
