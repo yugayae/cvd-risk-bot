@@ -111,7 +111,7 @@ MESSAGES = {
         "invalid_input": "⚠️ Пожалуйста, введите корректное значение.",
         
         # Результат
-        "result_header": "📊 РЕЗУЛЬТАТЫ АНАЛИЗА\n" + "=" * 40 + "\n",
+        "result_header": "📊 РЕЗУЛЬТАТЫ АНАЛИЗА\n" + "=" * 30 + "\n",
         "risk_probability": "🎯 Вероятность риска: {prob}%",
         "risk_category": "📈 Категория: {category}",
         "confidence": "🔍 Достоверность: {level}\n{note}",
@@ -184,7 +184,7 @@ MESSAGES = {
         "error": "❌ An error occurred. Try again /start",
         "invalid_input": "⚠️ Please enter a valid value.",
         
-        "result_header": "📊 ANALYSIS RESULTS\n" + "=" * 40 + "\n",
+        "result_header": "📊 ANALYSIS RESULTS\n" + "=" * 30 + "\n",
         "risk_probability": "🎯 Risk probability: {prob}%",
         "risk_category": "📈 Category: {category}",
         "confidence": "🔍 Confidence: {level}\n{note}",
@@ -256,7 +256,7 @@ MESSAGES = {
         "error": "❌ 오류가 발생했습니다. /start를 다시 시도하세요",
         "invalid_input": "⚠️ 올바른 값을 입력하세요.",
         
-        "result_header": "📊 분석 결과\n" + "=" * 40 + "\n",
+        "result_header": "📊 분석 결과\n" + "=" * 30 + "\n",
         "risk_probability": "🎯 위험 확률: {prob}%",
         "risk_category": "📈 범주: {category}",
         "confidence": "🔍 신뢰도: {level}\n{note}",
@@ -936,8 +936,12 @@ def main():
         
         # Проверяем какая кнопка нажата
         if any(keyword in text for keyword in ["🔄", "Новый анализ", "New Analysis", "새 분석"]):
-            # Кнопка "Новый анализ" - запускаем start
-            return await start(update, context)
+            # Очищаем старые данные пациента перед новым кругом
+            context.user_data['patient_data'] = {}
+            # Вызываем функцию старта
+            await start(update, context)
+            # ЯВНО возвращаем состояние выбора языка для ConversationHandler
+            return LANGUAGE
         
         elif any(keyword in text for keyword in ["📊", "статистика", "Statistics", "통계"]):
             # Кнопка "Статистика"
