@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 from typing import Dict, Optional
 import requests
 
-from telegram import Update, ReplyKeyboardMarkup, ReplyKeyboardRemove
+from telegram import Update, ReplyKeyboardMarkup, ReplyKeyboardRemove, KeyboardButton
 from telegram.ext import (
     Application,
     CommandHandler,
@@ -127,6 +127,12 @@ MESSAGES = {
                        "Sensitivity: {sensitivity}%\n"
                        "Specificity: {specificity}%\n"
                        "ROC-AUC: {roc_auc}",
+        # Кнопки быстрых действий
+        "btn_new_analysis": "🔄 Новый анализ",
+        "btn_stats": "📊 Моя статистика",  
+        "btn_help": "❓ Помощь",
+        "after_result": "Что хотите сделать дальше?",
+        
     },
     
     "en": {
@@ -195,6 +201,11 @@ MESSAGES = {
                        "Sensitivity: {sensitivity}%\n"
                        "Specificity: {specificity}%\n"
                        "ROC-AUC: {roc_auc}",
+        
+        "btn_new_analysis": "🔄 New Analysis",
+        "btn_stats": "📊 My Statistics",
+        "btn_help": "❓ Help",
+        "after_result": "What would you like to do next?",        
     },
     
     "kr": {
@@ -263,6 +274,10 @@ MESSAGES = {
                        "민감도: {sensitivity}%\n"
                        "특이도: {specificity}%\n"
                        "ROC-AUC: {roc_auc}",
+        "btn_new_analysis": "🔄 새 분석",
+        "btn_stats": "📊 내 통계",
+        "btn_help": "❓ 도움말",
+        "after_result": "다음에 무엇을 하시겠습니까?",        
     }
 }
 
@@ -724,10 +739,13 @@ async def send_prediction_request(update: Update, context: ContextTypes.DEFAULT_
             # Отправляем результат (разбиваем на части если слишком длинный)
             if len(message) > 4096:
                 parts = [message[i:i+4000] for i in range(0, len(message), 4000)]
-                for part in parts:
-                    await update.message.reply_text(part)
+                for i, part in enumerate(parts):
+                    if i == len(parts) - 1:  # Последняя часть - с кнопками
+                        await send_result_with_buttons(update, part, lang)
+                    else:
+                        await update.message.reply_text(part)
             else:
-                await update.message.reply_text(message)
+                await send_result_with_buttons(update, message, lang)
         else:
             await update.message.reply_text(
                 f"{MESSAGES[lang]['error']}\n"
@@ -795,6 +813,31 @@ def format_prediction_result(result: Dict, lang: str) -> str:
           
     return text
 
+async def send_result_with_buttons(update: Update, message: str, lang: str):
+    """Отправка результата с кнопками для быстрых действий"""
+    
+    msg = MESSAGES[lang]
+    
+    # Создаем кнопки
+    keyboard = [
+        [KeyboardButton(msg["btn_new_analysis"])],
+        [KeyboardButton(msg["btn_stats"]), KeyboardButton(msg["btn_help"])]
+    ]
+    
+    reply_markup = ReplyKeyboardMarkup(
+        keyboard,
+        resize_keyboard=True,
+        one_time_keyboard=False
+    )
+    
+    # Отправляем результат
+    await update.message.reply_text(message)
+    
+    # Отправляем предложение действий с кнопками
+    await update.message.reply_text(
+        msg["after_result"],
+        reply_markup=reply_markup
+    )
 # ==========================================
 # ГЛАВНАЯ ФУНКЦИЯ
 # ==========================================
@@ -841,8 +884,36 @@ def main():
         },
         fallbacks=[CommandHandler("cancel", cancel)],
     )
+    # ==========================================
+    # ОБРАБОТЧИК КНОПОК БЫСТРЫХ ДЕЙСТВИЙ
+    # ==========================================
+    
+    async def handle_button_press(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Обработка нажатия на кнопки быстрых действий"""
+        
+        text = update.message.text
+        lang = context.user_data.get('language', 'ru')
+        
+        # Проверяем какая кнопка нажата
+        if any(keyword in text for keyword in ["🔄", "Новый анализ", "New Analysis", "새 분석"]):
+            # Кнопка "Новый анализ" - запускаем start
+            return await start(update, context)
+        
+        elif any(keyword in text for keyword in ["📊", "статистика", "Statistics", "통계"]):
+            # Кнопка "Статистика"
+            await stats_command(update, context)
+            return ConversationHandler.END
+        
+        elif any(keyword in text for keyword in ["❓", "Помощь", "Help", "도움말"]):
+            # Кнопка "Помощь"
+            await help_command(update, context)
+            return ConversationHandler.END
+        
+        # Если текст не распознан - игнорируем
+        return ConversationHandler.END
     
     application.add_handler(conv_handler)
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND,handle_button_press))
     application.add_handler(CommandHandler("help", help_command))
     application.add_handler(CommandHandler("stats", stats_command))
     
