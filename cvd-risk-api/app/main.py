@@ -94,6 +94,12 @@ def predict_risk(patient_data: dict):
         result['safety_warnings'].append(warning_text)
     
     return result
-    
+
+@app.get("/health")
+async def health_check():
+    """Эндпоинт для предотвращения 'засыпания' сервера на Render"""
+    return {"status": "ok", "message": "I am alive!"}
+   
+ 
 
 
