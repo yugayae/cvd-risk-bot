@@ -49,8 +49,8 @@ logger = logging.getLogger(__name__)
 # ==========================================
 
 (LANGUAGE, AGE, GENDER, AP_HI, AP_LO, 
- CHOLESTEROL, GLUCOSE, BMI, 
- SMOKE, ALCOHOL, ACTIVITY) = range(11)
+ CHOLESTEROL, GLUCOSE, HEIGHT, WEIGHT,  
+ SMOKE, ALCOHOL, ACTIVITY) = range(12)
 
 # ==========================================
 # МНОГОЯЗЫЧНЫЕ ТЕКСТЫ
@@ -90,9 +90,8 @@ MESSAGES = {
         "ask_ap_lo": "Введите диастолическое давление (нижнее, мм рт.ст.):\nНапример: 80",
         "ask_cholesterol": "Уровень холестерина:",
         "ask_glucose": "Уровень глюкозы:",
-        "ask_bmi": "Введите ваш ИМТ (индекс массы тела):\n"
-                   "Рассчитать: вес(кг) / рост(м)²\n"
-                   "Например: 25.5",
+        "ask_height": "Введите ваш рост (см):\nНапример: 170",
+        "ask_weight": "Введите ваш вес (кг):\nНапример: 75",
         "ask_smoke": "Вы курите?",
         "ask_alcohol": "Употребляете алкоголь?",
         "ask_activity": "Занимаетесь физической активностью?",
@@ -167,9 +166,8 @@ MESSAGES = {
         "ask_ap_lo": "Enter diastolic blood pressure (lower, mmHg):\nExample: 80",
         "ask_cholesterol": "Cholesterol level:",
         "ask_glucose": "Glucose level:",
-        "ask_bmi": "Enter your BMI (Body Mass Index):\n"
-                   "Calculate: weight(kg) / height(m)²\n"
-                   "Example: 25.5",
+        "ask_height": "Enter your height (cm):\nExample: 170",
+        "ask_weight": "Enter your weight (kg):\nExample: 75",
         "ask_smoke": "Do you smoke?",
         "ask_alcohol": "Do you consume alcohol?",
         "ask_activity": "Do you exercise regularly?",
@@ -240,9 +238,8 @@ MESSAGES = {
         "ask_ap_lo": "이완기 혈압을 입력하세요 (하단, mmHg):\n예: 80",
         "ask_cholesterol": "콜레스테롤 수준:",
         "ask_glucose": "포도당 수준:",
-        "ask_bmi": "BMI(체질량 지수)를 입력하세요:\n"
-                   "계산: 체중(kg) / 키(m)²\n"
-                   "예: 25.5",
+        "ask_height": "키를 입력하세요 (cm):\n예: 170",
+        "ask_weight": "체중을 입력하세요 (kg):\n예: 75",
         "ask_smoke": "흡연하십니까?",
         "ask_alcohol": "음주하십니까?",
         "ask_activity": "규칙적으로 운동하십니까?",
@@ -615,19 +612,54 @@ async def glucose_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
     context.user_data['patient_data']['gluc'] = glucose
     
     await update.message.reply_text(
-        MESSAGES[lang]["ask_bmi"],
+        MESSAGES[lang]["ask_height"],
         reply_markup=ReplyKeyboardRemove()
     )
-    return BMI
+    return HEIGHT
 
-async def bmi_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    """Ввод ИМТ"""
+async def height_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """Ввод роста"""
     lang = context.user_data['language']
     
     try:
-        bmi = float(update.message.text.replace(',', '.'))
-        if 15 <= bmi <= 60:
-            context.user_data['patient_data']['bmi'] = bmi
+        height = float(update.message.text.replace(',', '.'))
+        if 100 <= height <= 250:  # Рост от 100 до 250 см
+            context.user_data['patient_data']['height'] = height
+            
+            await update.message.reply_text(
+                MESSAGES[lang]["ask_weight"],
+                reply_markup=ReplyKeyboardRemove()
+            )
+            return WEIGHT
+        else:
+            await update.message.reply_text(MESSAGES[lang]["invalid_input"])
+            return HEIGHT
+    except ValueError:
+        await update.message.reply_text(MESSAGES[lang]["invalid_input"])
+        return HEIGHT
+
+
+async def weight_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """Ввод веса и автоматический расчет ИМТ"""
+    lang = context.user_data['language']
+    
+    try:
+        weight = float(update.message.text.replace(',', '.'))
+        if 30 <= weight <= 300:  # Вес от 30 до 300 кг
+            context.user_data['patient_data']['weight'] = weight
+            
+            # АВТОМАТИЧЕСКИЙ РАСЧЕТ ИМТ
+            height_m = context.user_data['patient_data']['height'] / 100  # см в метры
+            bmi = weight / (height_m ** 2)
+            context.user_data['patient_data']['bmi'] = round(bmi, 1)
+            
+            # Показываем рассчитанный ИМТ пользователю
+            bmi_message = {
+                'ru': f"✅ Ваш ИМТ: {bmi:.1f} кг/м²",
+                'en': f"✅ Your BMI: {bmi:.1f} kg/m²",
+                'kr': f"✅ BMI: {bmi:.1f} kg/m²"
+            }
+            await update.message.reply_text(bmi_message.get(lang, bmi_message['en']))
             
             # Спрашиваем про курение
             keyboard = [[MESSAGES[lang]["yes"], MESSAGES[lang]["no"]]]
@@ -640,10 +672,10 @@ async def bmi_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
             return SMOKE
         else:
             await update.message.reply_text(MESSAGES[lang]["invalid_input"])
-            return BMI
+            return WEIGHT
     except ValueError:
         await update.message.reply_text(MESSAGES[lang]["invalid_input"])
-        return BMI
+        return WEIGHT
 
 async def smoke_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Ввод курения"""
@@ -877,7 +909,8 @@ def main():
             AP_LO: [MessageHandler(filters.TEXT & ~filters.COMMAND, ap_lo_input)],
             CHOLESTEROL: [MessageHandler(filters.TEXT & ~filters.COMMAND, cholesterol_input)],
             GLUCOSE: [MessageHandler(filters.TEXT & ~filters.COMMAND, glucose_input)],
-            BMI: [MessageHandler(filters.TEXT & ~filters.COMMAND, bmi_input)],
+            HEIGHT: [MessageHandler(filters.TEXT & ~filters.COMMAND, height_input)], 
+            WEIGHT: [MessageHandler(filters.TEXT & ~filters.COMMAND, weight_input)], 
             SMOKE: [MessageHandler(filters.TEXT & ~filters.COMMAND, smoke_input)],
             ALCOHOL: [MessageHandler(filters.TEXT & ~filters.COMMAND, alcohol_input)],
             ACTIVITY: [MessageHandler(filters.TEXT & ~filters.COMMAND, activity_input)],
