@@ -938,7 +938,7 @@ def main():
         lang = context.user_data.get('language', 'ru')
         
         # Проверяем какая кнопка нажата
-        elif any(keyword in text for keyword in ["📊", "статистика", "Statistics", "통계"]):
+        if any(keyword in text for keyword in ["📊", "статистика", "Statistics", "통계"]):
             # Кнопка "Статистика"
             await stats_command(update, context)
             return ConversationHandler.END
