@@ -748,15 +748,22 @@ async def activity_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 async def send_prediction_request(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Отправка данных к API и обработка результата"""
     lang = context.user_data['language']
-    patient_data = context.user_data['patient_data']
+    
+    # Создаем копию, чтобы не испортить исходные данные пользователя
+    patient_data_for_api = context.user_data['patient_data'].copy()
+    
+    # УДАЛЯЕМ рост и вес, так как модель их не поддерживает
+    patient_data_for_api.pop('height', None)
+    patient_data_for_api.pop('weight', None)
+    
     user_id = update.effective_user.id
     
     try:
-        # Отправка POST запроса к API
+        # Отправляем очищенные данные (patient_data_for_api)
         response = requests.post(
             API_URL,
-            json=patient_data,
-            timeout=60
+            json=patient_data_for_api, # <--- Передаем очищенный словарь
+            timeout=100 # Увеличили тайм-аут для тяжелых расчетов
         )
         
         if response.status_code == 200:
