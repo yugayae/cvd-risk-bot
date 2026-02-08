@@ -50,7 +50,7 @@ logger = logging.getLogger(__name__)
 # СОСТОЯНИЯ РАЗГОВОРА
 # ==========================================
 
-(LANGUAGE, REGION, AGE, GENDER, AP_HI, AP_LO, 
+(LANGUAGE, CONSENT, REGION, AGE, GENDER, AP_HI, AP_LO, 
  CHOLESTEROL, GLUCOSE, HEIGHT, WEIGHT,  
  SMOKE, ALCOHOL, ACTIVITY) = range(13)
 
@@ -86,6 +86,16 @@ MESSAGES = {
         "canceled": "❌ Анализ отменен. Используйте /start для нового анализа.",
         
         # Вопросы
+        "ask_consent": (
+            "🔒 Конфиденциальность и участие\n\n"
+            "Мы записываем обезличенные данные (без имени, контактов и Telegram ID)\n"
+            "для улучшения модели оценки сердечно-сосудистого риска.\n\n"
+            "Ваш честный ответ помогает сделать модель точнее.\n\n"
+            "Участие добровольное и не влияет на результат.\n\n"
+            "Хотите участвовать?"
+        ),
+        "consent_yes": "✅ Да, согласен",
+        "consent_no": "❌ Нет, не хочу участвовать",
         "ask_region": ("🌍 Регион проживания\n\n"
             "Пожалуйста, выберите регион, в котором вы проживаете большую часть времени.\n\n"
             "ℹ️ Информация используется только в обезличенном виде."),
@@ -181,6 +191,16 @@ MESSAGES = {
         "rate_limited": "⏱ Please wait {seconds} seconds between requests.",
         "canceled": "❌ Analysis canceled. Use /start for a new analysis.",
         
+        "ask_consent": (
+            "🔒 Privacy and Participation\n\n"
+            "We record anonymized data (no names, contacts, or Telegram IDs)\n"
+            "to improve the cardiovascular risk assessment model.\n\n"
+            "Your honest answers help make the model more accurate.\n\n"
+            "Participation is voluntary and does not affect your results.\n\n"
+            "Would you like to participate?"
+        ),
+        "consent_yes": "✅ Yes, I agree",
+        "consent_no": "❌ No, I don't want to participate",    
         "ask_region": ("🌍 Living Region\n\n"
             "Please select the region where you spend most of your time.\n\n"
             "ℹ️ Information is used only in anonymized form."),
@@ -266,6 +286,16 @@ MESSAGES = {
         "rate_limited": "⏱ 요청 사이에 {seconds}초를 기다려 주세요.",
         "canceled": "❌ 분석이 취소되었습니다. 새 분석을 위해 /start를 사용하세요.",
         
+        "ask_consent": (
+            "🔒 개인정보 보호 및 참여\n\n"
+            "우리는 익명화된 데이터(이름, 연락처, Telegram ID 없음)를 기록하여\n"
+            "심혈관 위험 평가 모델을 개선합니다.\n\n"
+            "정직한 답변은 모델의 정확성을 높이는 데 도움이 됩니다.\n\n"
+            "참여는 자발적이며 결과에 영향을 미치지 않습니다.\n\n"
+            "참여하시겠습니까?"
+        ),
+        "consent_yes": "✅ 예, 동의합니다",
+        "consent_no": "❌ 아니요, 참여하지 않겠습니다",
         "ask_region": ("🌍 거주 지역\n\n"
             "대부분의 시간을 보내는 지역을 선택하세요.\n\n"
             "ℹ️ 정보는 익명화된 형태로만 사용됩니다."),
@@ -525,7 +555,6 @@ REGION_MAP = {
 }
 
 
-
 async def language_choice(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Выбор языка"""
     text = update.message.text
@@ -542,11 +571,45 @@ async def language_choice(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     lang = context.user_data['language']
     context.user_data['patient_data'] = {'ui_language': lang}
     
+    # инициализируем patient_data
+    context.user_data['patient_data'] = {
+        'ui_language': lang
+    }
+
+    # спрашиваем согласие
+    keyboard = [
+        ["✅ Да, согласен"],
+        ["❌ Нет, не хочу участвовать"]
+    ]
+    reply_markup = ReplyKeyboardMarkup(
+        keyboard,
+        one_time_keyboard=True,
+        resize_keyboard=True
+    )
+
+    await update.message.reply_text(
+        MESSAGES[lang]["ask_consent"],
+        reply_markup=reply_markup
+    )
+
+    return CONSENT
+
+async def consent_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    lang = context.user_data['language']
+    text = update.message.text
+
+    if "Да" in text or "Yes" in text or "예" in text:
+        context.user_data['patient_data']['consent'] = 1
+    else:
+        context.user_data['patient_data']['consent'] = 0
+
+    # дальше — регион
     await update.message.reply_text(
         MESSAGES[lang]["ask_region"],
         reply_markup=REGION_KEYBOARD
     )
     return REGION
+
 
 async def region_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Ввод региона проживания"""
@@ -885,7 +948,8 @@ async def send_prediction_request(update: Update, context: ContextTypes.DEFAULT_
                 "risk_category": result.get("risk_label"),
             }
 
-            log_to_google_sheets(log_payload)
+            if context.user_data['patient_data'].get("consent") == 1:
+                log_to_google_sheets(log_payload)
 
 
             # Увеличиваем счетчик использования
@@ -1039,6 +1103,7 @@ def main():
         ],
         states={
             LANGUAGE: [MessageHandler(filters.TEXT & ~filters.COMMAND, language_choice)],
+            CONSENT: [MessageHandler(filters.TEXT & ~filters.COMMAND, consent_input)],
             REGION: [MessageHandler(filters.TEXT & ~filters.COMMAND, region_input)],
             AGE: [MessageHandler(filters.TEXT & ~filters.COMMAND, age_input)],
             GENDER: [MessageHandler(filters.TEXT & ~filters.COMMAND, gender_input)],
