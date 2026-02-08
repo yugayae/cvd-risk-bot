@@ -52,7 +52,7 @@ logger = logging.getLogger(__name__)
 
 (LANGUAGE, CONSENT, REGION, AGE, GENDER, AP_HI, AP_LO, 
  CHOLESTEROL, GLUCOSE, HEIGHT, WEIGHT,  
- SMOKE, ALCOHOL, ACTIVITY) = range(13)
+ SMOKE, ALCOHOL, ACTIVITY) = range(14)
 
 # ==========================================
 # МНОГОЯЗЫЧНЫЕ ТЕКСТЫ
