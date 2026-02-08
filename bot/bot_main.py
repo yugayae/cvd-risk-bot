@@ -88,8 +88,18 @@ MESSAGES = {
         "ask_gender": "Выберите пол:",
         "ask_ap_hi": "Введите систолическое давление (верхнее, мм рт.ст.):\nНапример: 120",
         "ask_ap_lo": "Введите диастолическое давление (нижнее, мм рт.ст.):\nНапример: 80",
-        "ask_cholesterol": "Уровень холестерина:",
-        "ask_glucose": "Уровень глюкозы:",
+        "ask_cholesterol": (
+            "📊 Уровень холестерина:\n\n"
+            "🟢 Норма — анализы в норме ИЛИ вы ведете здоровый образ жизни и нет лишнего веса.\n"
+            "🟡 Выше нормы — врач ранее отмечал повышение ИЛИ вы часто употребляете жирную пищу.\n"
+            "🔴 Высокий — диагностирована гиперлипидемия ИЛИ были ранние инфаркты у родных."
+        ),
+        "ask_glucose": (
+            "🍭 Уровень глюкозы:\n\n"
+            "🟢 Норма — сахар всегда в норме ИЛИ у вас нет лишнего веса и тяги к сладкому.\n"
+            "🟡 Выше нормы — был замечен «пограничный» сахар ИЛИ вы мало двигаетесь.\n"
+            "🔴 Высокий — диагностирован диабет ИЛИ вы принимаете сахароснижающие препараты."
+        ),
         "ask_height": "Введите ваш рост (см):\nНапример: 170",
         "ask_weight": "Введите ваш вес (кг):\nНапример: 75",
         "ask_smoke": "Вы курите?",
@@ -164,8 +174,18 @@ MESSAGES = {
         "ask_gender": "Choose your gender:",
         "ask_ap_hi": "Enter systolic blood pressure (upper, mmHg):\nExample: 120",
         "ask_ap_lo": "Enter diastolic blood pressure (lower, mmHg):\nExample: 80",
-        "ask_cholesterol": "Cholesterol level:",
-        "ask_glucose": "Glucose level:",
+        "ask_cholesterol": (
+            "📊 Cholesterol level:\n\n"
+            "🟢 Normal — results are normal OR you lead a healthy lifestyle and have no excess weight.\n"
+            "🟡 Above Normal — doctor noted a slight increase OR you frequently eat fatty/fried foods.\n"
+            "🔴 High — diagnosed hyperlipidemia OR family history of early heart attacks."
+        ),
+        "ask_glucose": (
+            "🍭 Glucose level:\n\n"
+            "🟢 Normal — glucose is always normal OR you have no excess weight and no sweet cravings.\n"
+            "🟡 Above Normal — doctor noted a borderline glucose level OR you are not very active.\n"
+            "🔴 High — diagnosed diabetes OR you are taking glucose-lowering medications."
+        ),
         "ask_height": "Enter your height (cm):\nExample: 170",
         "ask_weight": "Enter your weight (kg):\nExample: 75",
         "ask_smoke": "Do you smoke?",
@@ -236,8 +256,18 @@ MESSAGES = {
         "ask_gender": "성별을 선택하세요:",
         "ask_ap_hi": "수축기 혈압을 입력하세요 (상단, mmHg):\n예: 120",
         "ask_ap_lo": "이완기 혈압을 입력하세요 (하단, mmHg):\n예: 80",
-        "ask_cholesterol": "콜레스테롤 수준:",
-        "ask_glucose": "포도당 수준:",
+        "ask_cholesterol": (
+            "📊 콜레스테롤 수준:\n\n"
+            "🟢 정상 — 검사 결과가 정상이거나 건강한 생활 방식을 유지하고 있으며 과체중이 아닙니다.\n"
+            "🟡 정상 초과 — 의료진이 약간 높은 수치를 기록했거나 자주 지방이 많은 음식을 섭취합니다.\n"
+            "🔴 높음 — 고지혈증 진단 또는 가족력이 있는 경우."
+        ),
+        "ask_glucose": (
+            "🍭 포도당 수준:\n\n"
+            "🟢 정상 — 포도당 수치가 항상 정상이거나 과체중이 없고 당분 섭취에 대한 욕구가 없습니다.\n"
+            "🟡 정상 초과 — 의료진이 경계선 수치를 기록했거나 활동성이 낮습니다.\n"
+            "🔴 높음 — 당뇨병 진단 또는 혈당 강하제 복용 중입니다."
+        ),
         "ask_height": "키를 입력하세요 (cm):\n예: 170",
         "ask_weight": "체중을 입력하세요 (kg):\n예: 75",
         "ask_smoke": "흡연하십니까?",
@@ -848,6 +878,13 @@ def format_prediction_result(result: Dict, lang: str) -> str:
     
     # Disclaimer
     if result.get("disclaimer"):
+        
+        subjective_note = {
+            "ru": "\n\nℹ️ Примечание: Если данные холестерина/сахара введены без анализов, точность может быть ниже.",
+            "en": "\n\nℹ️ Note: If cholesterol/glucose data were entered without lab tests, accuracy may be lower.",
+            "kr": "\n\nℹ️ 참고: 콜레스테롤/혈당 데이터를 혈액 검사 없이 입력한 경우 정확도가 낮아질 수 있습니다."
+        }
+        text += subjective_note.get(lang, subjective_note["en"])
         text += msg["disclaimer"].format(text=result["disclaimer"])
           
     return text
