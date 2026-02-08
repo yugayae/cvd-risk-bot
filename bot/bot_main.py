@@ -50,9 +50,9 @@ logger = logging.getLogger(__name__)
 # СОСТОЯНИЯ РАЗГОВОРА
 # ==========================================
 
-(LANGUAGE, AGE, GENDER, AP_HI, AP_LO, 
+(LANGUAGE, REGION, AGE, GENDER, AP_HI, AP_LO, 
  CHOLESTEROL, GLUCOSE, HEIGHT, WEIGHT,  
- SMOKE, ALCOHOL, ACTIVITY) = range(12)
+ SMOKE, ALCOHOL, ACTIVITY) = range(13)
 
 # ==========================================
 # МНОГОЯЗЫЧНЫЕ ТЕКСТЫ
@@ -86,6 +86,9 @@ MESSAGES = {
         "canceled": "❌ Анализ отменен. Используйте /start для нового анализа.",
         
         # Вопросы
+        "ask_region": ("🌍 Регион проживания\n\n"
+            "Пожалуйста, выберите регион, в котором вы проживаете большую часть времени.\n\n"
+            "ℹ️ Информация используется только в обезличенном виде."),
         "ask_age": "Введите ваш возраст (лет):",
         "ask_gender": "Выберите пол:",
         "ask_ap_hi": "Введите систолическое давление (верхнее, мм рт.ст.):\nНапример: 120",
@@ -178,6 +181,9 @@ MESSAGES = {
         "rate_limited": "⏱ Please wait {seconds} seconds between requests.",
         "canceled": "❌ Analysis canceled. Use /start for a new analysis.",
         
+        "ask_region": ("🌍 Living Region\n\n"
+            "Please select the region where you spend most of your time.\n\n"
+            "ℹ️ Information is used only in anonymized form."),
         "ask_age": "Enter your age (years):",
         "ask_gender": "Choose your gender:",
         "ask_ap_hi": "Enter systolic blood pressure (upper, mmHg):\nExample: 120",
@@ -260,6 +266,9 @@ MESSAGES = {
         "rate_limited": "⏱ 요청 사이에 {seconds}초를 기다려 주세요.",
         "canceled": "❌ 분석이 취소되었습니다. 새 분석을 위해 /start를 사용하세요.",
         
+        "ask_region": ("🌍 거주 지역\n\n"
+            "대부분의 시간을 보내는 지역을 선택하세요.\n\n"
+            "ℹ️ 정보는 익명화된 형태로만 사용됩니다."),
         "ask_age": "나이를 입력하세요 (년):",
         "ask_gender": "성별을 선택하세요:",
         "ask_ap_hi": "수축기 혈압을 입력하세요 (상단, mmHg):\n예: 120",
@@ -494,6 +503,28 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 # ==========================================
 # ОБРАБОТЧИКИ ВВОДА ДАННЫХ
 # ==========================================
+REGION_KEYBOARD = ReplyKeyboardMarkup(
+    [
+        ["🇪🇺 Европа", "🌏 Азия"],
+        ["🌎 Северная Америка", "🌎 Южная Америка"],
+        ["🌍 Африка", "🌊 Океания"],
+        ["🌐 Не хочу указывать"]
+    ],
+    resize_keyboard=True,
+    one_time_keyboard=True
+)
+
+REGION_MAP = {
+    "🇪🇺 Европа": "Europe",
+    "🌏 Азия": "Asia",
+    "🌎 Северная Америка": "North_America",
+    "🌎 Южная Америка": "South_America",
+    "🌍 Африка": "Africa",
+    "🌊 Океания": "Oceania",
+    "🌐 Не хочу указывать": "Unknown"
+}
+
+
 
 async def language_choice(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Выбор языка"""
@@ -511,6 +542,20 @@ async def language_choice(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     lang = context.user_data['language']
     context.user_data['patient_data'] = {'ui_language': lang}
     
+    await update.message.reply_text(
+        MESSAGES[lang]["ask_region"],
+        reply_markup=REGION_KEYBOARD
+    )
+    return REGION
+
+async def region_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """Ввод региона проживания"""
+    lang = context.user_data['language']
+    text = update.message.text
+    
+    region = REGION_MAP.get(text, "Unknown")
+    context.user_data['patient_data']['region'] = region
+
     await update.message.reply_text(
         MESSAGES[lang]["ask_age"],
         reply_markup=ReplyKeyboardRemove()
@@ -994,6 +1039,7 @@ def main():
         ],
         states={
             LANGUAGE: [MessageHandler(filters.TEXT & ~filters.COMMAND, language_choice)],
+            REGION: [MessageHandler(filters.TEXT & ~filters.COMMAND, region_input)],
             AGE: [MessageHandler(filters.TEXT & ~filters.COMMAND, age_input)],
             GENDER: [MessageHandler(filters.TEXT & ~filters.COMMAND, gender_input)],
             AP_HI: [MessageHandler(filters.TEXT & ~filters.COMMAND, ap_hi_input)],
