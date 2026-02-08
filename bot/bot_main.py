@@ -29,6 +29,8 @@ BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "YOUR_BOT_TOKEN_HERE")
 
 # API эндпоинт (локальный или удаленный)
 API_URL = os.getenv("API_URL", "http://127.0.0.1:8000/predict")
+GOOGLE_SHEETS_URL = os.getenv("GOOGLE_SHEETS_URL")
+
 
 # Лимиты использования
 DAILY_LIMIT = int(os.getenv("DAILY_LIMIT", "10"))  # запросов в день на пользователя
@@ -780,6 +782,17 @@ async def activity_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 # ==========================================
 # ОТПРАВКА ЗАПРОСА К API
 # ==========================================
+def log_to_google_sheets(data: dict):
+    try:
+        requests.post(
+            GOOGLE_SHEETS_URL,
+            json=data,
+            timeout=3
+        )
+    except Exception as e:
+        # ВАЖНО: ошибка логирования не должна ломать бота
+        logger.warning(f"Google Sheets logging failed: {e}")
+
 
 async def send_prediction_request(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Отправка данных к API и обработка результата"""
@@ -804,7 +817,32 @@ async def send_prediction_request(update: Update, context: ContextTypes.DEFAULT_
         
         if response.status_code == 200:
             result = response.json()
-            
+            # ==========================================
+            # ЛОГИРОВАНИЕ ДАННЫХ ДЛЯ ДАТАСЕТА (обезличено)
+            # ==========================================
+
+            pd = context.user_data['patient_data']
+
+            log_payload = {
+                "date": datetime.utcnow().isoformat(),
+                "region": pd.get("region", "Unknown"),
+                "age": pd.get("age_years"),
+                "sex": pd.get("gender"),
+                "systolic_bp": pd.get("ap_hi"),
+                "diastolic_bp": pd.get("ap_lo"),
+                "cholesterol_cat": pd.get("cholesterol"),
+                "glucose_cat": pd.get("gluc"),
+                "bmi": pd.get("bmi"),
+                "smoking": pd.get("smoke"),
+                "alcohol": pd.get("alco"),
+                "physical_activity": pd.get("active"),
+                "risk_probability": result.get("risk_probability"),
+                "risk_category": result.get("risk_label"),
+            }
+
+            log_to_google_sheets(log_payload)
+
+
             # Увеличиваем счетчик использования
             increment_user_usage(user_id)
             
