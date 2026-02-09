@@ -6,106 +6,128 @@
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.110.0-green.svg)
 ![Telegram](https://img.shields.io/badge/Telegram-Bot-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Status](https://img.shields.io/badge/status-active-success.svg)
 
-**AI-powered Telegram bot for cardiovascular disease risk prediction with clinical-grade explanations**
+**AI-powered cardiovascular disease risk prediction with clinical-grade explanations**
 
-[🤖 Try the Bot](https://t.me/cvd_risk_bot) • [📖 Documentation](#documentation) • [🚀 Deploy](#deployment)
+[🤖 Try Bot](https://t.me/cvd_risk_bot) • [📖 Русская версия](README_RU.md) • [🚀 Deploy](#deployment)
 
 </div>
 
 ---
 
-## 📋 Table of Contents
+## 📋 Contents
 
 - [Overview](#overview)
 - [Features](#features)
+- [Privacy & Data](#privacy--data-collection)
 - [Quick Start](#quick-start)
-- [Architecture](#architecture)
 - [Deployment](#deployment)
-- [Model Performance](#model-performance)
-- [Contributing](#contributing)
+- [Performance](#model-performance)
 
 ---
 
 ## 🎯 Overview
 
-CVD Risk Predictor is an intelligent Telegram bot that assesses cardiovascular disease risk using a calibrated CatBoost machine learning model with SHAP explanations. Available in **Russian, English, and Korean**.
+Intelligent Telegram bot for cardiovascular disease risk assessment using **CatBoost ML model** with **SHAP interpretability**. Multilingual support: **Russian, English, Korean**.
 
-### 🌟 Key Features
+### Key Features
 
-- 🤖 **Interactive Bot** - Easy conversational interface
-- 🧠 **ML-Powered** - CatBoost model with 80% ROC-AUC
-- 📊 **SHAP Explanations** - Transparent risk factors
-- 🌍 **Multilingual** - ru/en/kr support
-- ⚕️ **Clinical-Grade** - Confidence levels & safety warnings
-- 🔒 **Privacy-First** - No data storage, rate limiting
+- 🤖 Interactive Telegram bot
+- 🧠 ML-powered (CatBoost, 80% ROC-AUC)
+- 📊 SHAP explanations
+- 🌍 3 languages (ru/en/kr)
+- ⚕️ Clinical-grade output
+- 🔒 Privacy-first with consent
+- 📈 Auto BMI calculation
+- 📊 Google Sheets logging
+
+---
+
+## 🔒 Privacy & Data Collection
+
+### User Consent
+
+- ✅ **Transparent consent** before assessment
+- ✅ **Anonymous data** only (no Telegram ID, name, contacts)
+- ✅ **Voluntary** - declining doesn't affect results
+- ✅ **Research purpose** - improving model accuracy
+
+### Collected (if consented)
+
+- Medical data (age, BP, cholesterol, etc.)
+- Risk results & SHAP values
+- Region (e.g., "East Asia")
+- Timestamp
+
+### NOT Collected
+
+- ❌ Telegram username/ID
+- ❌ Phone/email
+- ❌ Personal identifiers
+- ❌ Chat history
 
 ---
 
 ## ✨ Features
 
 ### For Users
-- ✅ Quick 11-question assessment
-- ✅ Instant risk probability & category
-- ✅ Detailed factor explanations
-- ✅ Safety warnings for abnormal values
-- ✅ Usage statistics
+
+- 12-question health assessment
+- Auto BMI from height/weight
+- Instant risk analysis
+- SHAP factor explanations
+- Clinical warnings
+- Quick action buttons
 
 ### For Developers
-- ✅ FastAPI backend with async
-- ✅ Docker-ready deployment
-- ✅ Free hosting on Render.com
-- ✅ Rate limiting (10/day per user)
-- ✅ Health check monitoring
+
+- FastAPI backend
+- Docker-ready
+- Free Render.com hosting
+- Rate limiting (10/day)
+- Health check endpoint
+- Google Sheets webhook
 
 ---
 
 ## 🚀 Quick Start
 
-### Local Development
-
 ```bash
-# 1. Clone repository
+# Clone
 git clone https://github.com/yugayae/cvd-risk-bot.git
 cd cvd-risk-bot
 
-# 2. Install dependencies
+# Install
 pip install -r requirements_bot.txt
 
-# 3. Configure
+# Configure
 cp .env.example .env
-# Add your TELEGRAM_BOT_TOKEN to .env
+# Add TELEGRAM_BOT_TOKEN
 
-# 4. Run API (terminal 1)
+# Run API (terminal 1)
 cd cvd-risk-api
 uvicorn app.main:app --host 0.0.0.0 --port 8000
 
-# 5. Run bot (terminal 2)
+# Run bot (terminal 2)
 python bot/bot_main.py
 ```
 
-### Deploy to Render.com (Free)
+---
+
+## 🌐 Deployment
+
+### Render.com (Free)
 
 1. Push to GitHub
 2. Connect to [render.com](https://render.com)
-3. Create Web Service (Docker)
+3. New Web Service (Docker)
 4. Add env var: `TELEGRAM_BOT_TOKEN`
-5. Deploy! ✅
+5. Deploy!
 
-**Full guide:** [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)
-
----
-
-## 🏗️ Architecture
-
-```
-User → Telegram Bot → FastAPI → ML Model (CatBoost + SHAP) → Results
-                        ↓
-                   Rate Limiter
-                   Validation
-                   Localization
-```
+**Optional env vars:**
+- `GOOGLE_SHEETS_URL` - for data logging
+- `DAILY_LIMIT=10`
+- `RATE_LIMIT_MINUTES=1`
 
 ---
 
@@ -118,61 +140,47 @@ User → Telegram Bot → FastAPI → ML Model (CatBoost + SHAP) → Results
 | Specificity | 73% |
 | Dataset | 70K patients |
 
-**Gender-specific:** Male: 0.79, Female: 0.81
+**Gender-specific:** Male 0.79, Female 0.81
 
 ---
 
 ## 📱 Usage
 
-### Commands
+**Commands:**
 - `/start` - New assessment
 - `/help` - Instructions
-- `/stats` - Your statistics
+- `/stats` - Statistics
 - `/cancel` - Cancel
 
-### Assessment
+**Flow:**
 1. Choose language
-2. Answer 11 questions (age, BP, cholesterol, etc.)
-3. Get detailed risk report with explanations
+2. Consent (optional)
+3. Answer 12 health questions
+4. Get detailed risk report
+5. Quick actions (New/Stats/Help)
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Backend:** FastAPI, Uvicorn
-- **ML:** CatBoost, SHAP, scikit-learn
-- **Bot:** python-telegram-bot 21.0
-- **Deploy:** Docker, Render.com
-
----
-
-## 📂 Project Structure
-
-```
-cvd-risk-bot/
-├── bot/                    # Telegram bot
-├── cvd-risk-api/          # FastAPI backend
-│   └── app/               # Application logic
-├── model/                 # ML model (12MB)
-├── Dockerfile             # Container config
-├── render.yaml            # Deployment config
-└── requirements_bot.txt   # Dependencies
-```
+- Backend: FastAPI, Uvicorn
+- ML: CatBoost, SHAP, scikit-learn
+- Bot: python-telegram-bot 21.0
+- Deploy: Docker, Render.com
+- Logging: Google Apps Script
 
 ---
 
 ## ⚠️ Disclaimer
 
-**NOT medical advice.** For informational purposes only. Consult healthcare professionals for medical decisions.
+**NOT medical advice.** For informational purposes only.  
+Consult healthcare professionals for medical decisions.
 
 ---
 
 ## 🤝 Contributing
 
-1. Fork the repo
-2. Create feature branch
-3. Commit changes
-4. Push and open PR
+See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ---
 
@@ -182,16 +190,10 @@ MIT License - see [LICENSE](LICENSE)
 
 ---
 
-## 👥 Authors
-
-Maintained by [yugayae](https://github.com/yugayae)
-
----
-
 ## 📞 Support
 
-- 🐛 Issues: [GitHub Issues](https://github.com/yugayae/cvd-risk-bot/issues)
-- 💬 Questions: Create an issue
+- Issues: [GitHub](https://github.com/yugayae/cvd-risk-bot/issues)
+- Questions: Create issue with `question` label
 
 ---
 
@@ -199,6 +201,6 @@ Maintained by [yugayae](https://github.com/yugayae)
 
 **Made with ❤️ for better healthcare**
 
-[⬆ Back to Top](#-cvd-risk-predictor---ai-telegram-bot)
+[⬆ Top](#-cvd-risk-predictor---ai-telegram-bot)
 
 </div>

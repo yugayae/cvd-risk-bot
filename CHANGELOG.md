@@ -1,6 +1,32 @@
 # Changelog
 
-All notable changes to CVD Risk Predictor will be documented here.
+All notable changes to CVD Risk Predictor documented here.
+
+---
+
+## [1.1.0] - 2025-02-09
+
+### ✨ Added
+- **User consent system** for anonymous data collection
+- **Google Sheets integration** for research data logging
+- **Region selection** for geographic tracking
+- **Auto BMI calculation** from height and weight input
+- **Quick action buttons** after results (New Analysis / Statistics / Help)
+- **Improved user flow** with consent and region questions
+- **Enhanced privacy** with transparent data collection practices
+
+### 🔄 Changed
+- BMI input → Height & Weight input with automatic calculation
+- Added 2 new conversation states (CONSENT, REGION)
+- Improved user experience with clearer data collection explanation
+- Updated message templates for all 3 languages
+
+### 🔒 Security
+- Anonymous data logging (no Telegram ID stored)
+- Voluntary consent mechanism
+- GDPR-compliant data handling
+
+---
 
 ## [1.0.0] - 2025-02-06
 
@@ -14,7 +40,6 @@ All notable changes to CVD Risk Predictor will be documented here.
 - Health check endpoint for monitoring
 - Docker deployment configuration
 - Render.com deployment support
-- Quick action buttons after results
 - Usage statistics tracking
 - Comprehensive documentation
 
@@ -39,19 +64,12 @@ All notable changes to CVD Risk Predictor will be documented here.
 - PDF report generation
 - Graphical risk visualizations
 - Historical tracking (with consent)
-- Additional risk calculators
-- Mobile app version
+- Additional risk calculators (Framingham, SCORE)
 - Medical professional dashboard
+- Mobile app version
+- Advanced analytics
 
 ---
 
-## Version Format
-
-[MAJOR.MINOR.PATCH]
-- MAJOR: Breaking changes
-- MINOR: New features (backward compatible)
-- PATCH: Bug fixes
-
----
-
+[1.1.0]: https://github.com/yugayae/cvd-risk-bot/releases/tag/v1.1.0
 [1.0.0]: https://github.com/yugayae/cvd-risk-bot/releases/tag/v1.0.0
