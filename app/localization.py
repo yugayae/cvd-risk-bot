@@ -5,6 +5,13 @@ LOCALIZATION = {
             "moderate": "Умеренный сердечно-сосудистый риск",
             "high": "Высокий сердечно-сосудистый риск"
         },
+        "option_male": "Мужской 👨",
+        "option_female": "Женский 👩",
+        "option_yes": "Да ✅",
+        "option_no": "Нет ❌",
+        "option_normal": "Норма 🟢",
+        "option_above_normal": "Выше нормы 🟡",
+        "option_high": "Высокий 🔴",
         "confidence": {
             "high": {
                 "title": "Высокая достоверность прогноза",
@@ -168,6 +175,13 @@ LOCALIZATION = {
             "moderate": "중등도 심혈관 위험",
             "high": "높은 심혈관 위험"
         },
+        "option_male": "남성 👨",
+        "option_female": "여성 👩",
+        "option_yes": "예 ✅",
+        "option_no": "아니요 ❌",
+        "option_normal": "정상 🟢",
+        "option_above_normal": "정상 이상 🟡",
+        "option_high": "높음 🔴",
         "confidence": {
             "high": {
                 "title": "예측 신뢰도 높음",
@@ -330,6 +344,13 @@ LOCALIZATION = {
             "moderate": "Moderate cardiovascular risk",
             "high": "High cardiovascular risk"
         },
+        "option_male": "Male 👨",
+        "option_female": "Female 👩",
+        "option_yes": "Yes ✅",
+        "option_no": "No ❌",
+        "option_normal": "Normal 🟢",
+        "option_above_normal": "Above Normal 🟡",
+        "option_high": "High 🔴",
         "confidence": {
             "high": {
                 "title": "High prediction confidence",
