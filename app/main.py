@@ -64,21 +64,24 @@ TELEGRAM_SECRET_TOKEN = os.getenv("TELEGRAM_SECRET_TOKEN")
 
 @app.on_event("startup")
 async def on_startup():
-    webhook_url = os.getenv("WEBHOOK_URL")
-    if webhook_url:
-        logging.info(f"Setting webhook to {webhook_url}")
-        
-        # Initialize Bot info (so Command filters work correctly)
-        bot_info = await bot.get_me()
-        logging.info(f"Bot initialized: @{bot_info.username}")
-        
-        await bot.set_webhook(
-            url=webhook_url, 
-            secret_token=TELEGRAM_SECRET_TOKEN,
-            allowed_updates=["message", "callback_query"]
-        )
-    else:
-        logging.warning("WEBHOOK_URL not set. Bot will not receive updates unless polling is used separately.")
+    try:
+        webhook_url = os.getenv("WEBHOOK_URL")
+        if webhook_url:
+            logging.info(f"Setting webhook to {webhook_url}")
+            
+            # Initialize Bot info (so Command filters work correctly)
+            bot_info = await bot.get_me()
+            logging.info(f"Bot initialized: @{bot_info.username}")
+            
+            await bot.set_webhook(
+                url=webhook_url, 
+                secret_token=TELEGRAM_SECRET_TOKEN,
+                allowed_updates=["message", "callback_query"]
+            )
+        else:
+            logging.warning("WEBHOOK_URL not set. Bot will not receive updates unless polling is used separately.")
+    except Exception as e:
+        logging.error(f"Error during startup: {e}")
 
 @app.on_event("shutdown")
 async def on_shutdown():
