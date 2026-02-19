@@ -7,5 +7,5 @@ from aiogram.enums import ParseMode
 if not BOT_TOKEN:
     raise ValueError("BOT_TOKEN is not set")
 
-bot = Bot(token=BOT_TOKEN, parse_mode=ParseMode.MARKDOWN)
+bot = Bot(token=BOT_TOKEN, parse_mode=ParseMode.HTML)
 dp = Dispatcher()
