@@ -51,15 +51,25 @@ async def process_language(message: types.Message, state: FSMContext):
     lang = lang_map[message.text]
     await state.update_data(language=lang)
     
-    # Region Selection Keyboard (WHO regions)
-    regions = ["AFR", "AMR", "SEAR", "EUR", "EMR", "WPR"]
-    lang_data = await state.get_data()
-    unknown_text = bot_i18n.get_bot_str(lang, "region_unknown")
+    # Region Selection Keyboard (WHO regions with full names)
+    regions_code = ["AFR", "AMR", "SEAR", "EUR", "EMR", "WPR"]
+    region_names_map = bot_i18n.t(lang, "bot", "region_names")
     
     keyboard_btns = []
-    # Two buttons per row
-    for i in range(0, len(regions), 2):
-        keyboard_btns.append([types.KeyboardButton(text=regions[i]), types.KeyboardButton(text=regions[i+1])])
+    # Create buttons using full localized names
+    for i in range(0, len(regions_code), 2):
+        row = []
+        code1 = regions_code[i]
+        name1 = region_names_map.get(code1, code1)
+        row.append(types.KeyboardButton(text=name1))
+        
+        if i+1 < len(regions_code):
+            code2 = regions_code[i+1]
+            name2 = region_names_map.get(code2, code2)
+            row.append(types.KeyboardButton(text=name2))
+        keyboard_btns.append(row)
+        
+    unknown_text = bot_i18n.get_bot_str(lang, "region_unknown")
     keyboard_btns.append([types.KeyboardButton(text=unknown_text)])
         
     keyboard = types.ReplyKeyboardMarkup(
@@ -76,17 +86,49 @@ async def process_language(message: types.Message, state: FSMContext):
 
 @router.message(RiskForm.region)
 async def process_region(message: types.Message, state: FSMContext):
-    await state.update_data(region=message.text)
+    # Reverse lookup region code from name
     data = await state.get_data()
     lang = data.get("language", "en")
+    region_names_map = bot_i18n.t(lang, "bot", "region_names")
     
-    remaining = stats_manager.get_remaining(message.from_user.id)
+    # Create reverse map: Name -> Code
+    name_to_code = {v: k for k, v in region_names_map.items()}
+    unknown_text = bot_i18n.get_bot_str(lang, "region_unknown")
+    
+    selected_text = message.text
+    if selected_text == unknown_text:
+        region_code = "Unknown"
+    else:
+        region_code = name_to_code.get(selected_text, "EUR") # Default to EUR if mismatch
+        
+    await state.update_data(region=region_code)
+    
+    # ASK CONSENT HERE (Early)
+    from bot.handlers.form import get_consent_kb # Import here to avoid circular
+    consent_request = bot_i18n.get_bot_str(lang, "consent_request")
+    
+    await message.answer(consent_request, reply_markup=get_consent_kb(lang))
+    await state.set_state(RiskForm.consent)
+
+@router.callback_query(RiskForm.consent, F.data.startswith("consent_"))
+async def process_consent_early(callback: types.CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+    lang = data.get("language", "en")
+    consent_given = callback.data == "consent_yes"
+    
+    await state.update_data(consent=consent_given)
+    await callback.answer()
+    
+    confirm_text = bot_i18n.get_bot_str(lang, "consent_thanks")
+    await callback.message.edit_text(f"{'✅' if consent_given else '👌'} {confirm_text}")
+    
+    # Show WELCOME MENU
+    remaining = stats_manager.get_remaining(callback.from_user.id)
     limit = stats_manager.daily_limit
     
-    # Welcome message in selected language
     welcome_text = bot_i18n.get_bot_str(lang, "welcome").format(count=remaining, limit=limit)
-    
     assess_btn_text = bot_i18n.get_bot_str(lang, "btn_new_assessment").format(count=remaining, limit=limit)
+    
     keyboard = types.ReplyKeyboardMarkup(
         keyboard=[
             [types.KeyboardButton(text=assess_btn_text)],
@@ -95,9 +137,10 @@ async def process_region(message: types.Message, state: FSMContext):
         resize_keyboard=True
     )
     
-    await message.answer(welcome_text, parse_mode="Markdown", reply_markup=keyboard)
+    await callback.message.answer(welcome_text, parse_mode="Markdown", reply_markup=keyboard)
     
-    # Clear state so that menu buttons (text) are handled by global handlers
+    # Clear state for menu interaction, BUT keep data
+    # We set state to None so global handlers catch the buttons
     await state.set_state(None)
 
 @router.message(Command("assess"))

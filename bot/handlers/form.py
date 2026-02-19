@@ -359,7 +359,7 @@ async def process_active(message: types.Message, state: FSMContext):
         
         await message.answer(response_text, parse_mode="Markdown")
         
-        # Save result to state for GSheets
+        # Save result to state
         await state.update_data(
             risk_probability=risk_percent,
             risk_category=risk_cat,
@@ -368,38 +368,23 @@ async def process_active(message: types.Message, state: FSMContext):
             bmi=result.get('patient_bmi', 0)
         )
         
-        # Ask for Consent
-        consent_request = bot_i18n.get_bot_str(lang, "consent_request")
-        await message.answer(consent_request, reply_markup=get_consent_kb(lang))
-        # No state change here yet, callback will handle it
+        # LOGGING (If Consent Given)
+        has_consent = form_data.get("consent", False)
+        if has_consent:
+             # Re-fetch full data including result
+             final_data = await state.get_data()
+             await gs_service.append_patient_data(final_data)
+        
+        # Show Post-Result Menu
+        menu_text = bot_i18n.get_bot_str(lang, "main_menu")
+        await message.answer(menu_text, reply_markup=get_post_result_menu(lang, message.from_user.id))
         
     except Exception as e:
         logger.error(f"Error in bot prediction flow: {e}")
         await message.answer(f"❌ Error: {str(e)}")
         await state.clear()
 
-# --- Consent and Menu Handlers ---
-
-@router.callback_query(F.data.startswith("consent_"))
-async def handle_consent(callback: types.CallbackQuery, state: FSMContext):
-    data = await state.get_data()
-    lang = data.get("language", "en")
-    consent_given = callback.data == "consent_yes"
-    
-    await callback.answer()
-    
-    if consent_given:
-        # Log to Google Sheets
-        success = await gs_service.append_patient_data(data)
-        confirm_text = bot_i18n.get_bot_str(lang, "consent_thanks")
-        await callback.message.edit_text(f"✅ {confirm_text}")
-    else:
-        confirm_text = bot_i18n.get_bot_str(lang, "consent_thanks")
-        await callback.message.edit_text(f"👌 {confirm_text}")
-
-    # Show Post-Result Menu
-    menu_text = bot_i18n.get_bot_str(lang, "main_menu")
-    await callback.message.answer(menu_text, reply_markup=get_post_result_menu(lang, callback.from_user.id))
+# --- Menu Handlers ---
 
 @router.callback_query(F.data == "new_assess")
 async def handle_new_assess(callback: types.CallbackQuery, state: FSMContext):
@@ -408,6 +393,7 @@ async def handle_new_assess(callback: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
     lang = data.get("language", "en")
     region = data.get("region", "EUR")
+    consent = data.get("consent", False) # Preserve consent
     
     # Check limits again
     can_assess, reason = stats_manager.can_assess(callback.from_user.id)
@@ -419,7 +405,7 @@ async def handle_new_assess(callback: types.CallbackQuery, state: FSMContext):
         return await callback.message.answer(msg)
 
     await state.clear()
-    await state.update_data(language=lang, region=region)
+    await state.update_data(language=lang, region=region, consent=consent)
     
     # Start assessment directly
     dob_prompt = bot_i18n.get_bot_str(lang, "dob_prompt")
