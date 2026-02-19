@@ -57,7 +57,7 @@ model_metrics = get_model_performance_metrics()
 # TELEGRAM BOT INTEGRATION
 # -------------------------
 from app.bot_instance import bot, dp
-import app.bot_setup  # Registers routers
+import app.bot_setup as bot_setup  # Registers routers
 
 WEBHOOK_PATH = "/webhook"
 TELEGRAM_SECRET_TOKEN = os.getenv("TELEGRAM_SECRET_TOKEN")
