@@ -1,4 +1,5 @@
 from aiogram import Router, types, F
+import logging
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from bot.states import RiskForm
@@ -9,6 +10,7 @@ router = Router()
 
 @router.message(Command("start"))
 async def cmd_start(message: types.Message, state: FSMContext):
+    logging.info(f"HANDLER: cmd_start triggered for user {message.from_user.id}")
     await state.clear()
     
     # Language Selection Keyboard
