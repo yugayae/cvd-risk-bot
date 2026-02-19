@@ -48,10 +48,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize Model and Explainer
-model = load_model()
-shap_explainer = create_shap_explainer(model)
-model_metrics = get_model_performance_metrics()
+# Initialize Shared State
+from app.core.state import global_state
+global_state.initialize()
+
+# Assign local vars for backward compatibility if needed, or remove if unused elsewhere
+model = global_state.model
+shap_explainer = global_state.shap_explainer
+model_metrics = global_state.model_metrics
 
 # -------------------------
 # TELEGRAM BOT INTEGRATION

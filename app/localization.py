@@ -142,6 +142,14 @@ LOCALIZATION = {
             "welcome": "👋 **Добро пожаловать в CardioRisk AI!**\n\nЯ помогу вам оценить риск сердечно-сосудистых заболеваний.\n\n⚠️ **Отказ от ответственности:** Результаты носят информационный характер и не являются медицинской консультацией. Все результаты должны интерпретироваться врачом.\n\n📊 Доступно сегодня: {count} из {limit}",
             "select_lang": "Пожалуйста, выберете язык / Please select your language / 언어를 선택하세요:",
             "select_region": "Выберите ваш регион (стандарт ВОЗ):",
+            "region_names": {
+                "AFR": "Африка (AFR)",
+                "AMR": "Америка (AMR)",
+                "SEAR": "Юго-Вост. Азия (SEAR)",
+                "EUR": "Европа (EUR)",
+                "EMR": "Вост. Средиземноморье (EMR)",
+                "WPR": "Зап. часть Тихого океана (WPR)"
+            },
             "region_unknown": "Неизвестно",
             "consent_request": "Мы не записываем ваш ID или личные данные — все полностью обезличено. Эти данные помогают нам улучшить модель. Вы согласны на сохранение?",
             "consent_yes": "✅ Да, согласен",
@@ -312,6 +320,14 @@ LOCALIZATION = {
             "welcome": "👋 **CardioRisk AI에 오신 것을 환영합니다!**\n\nAI를 통해 심혈관 질환 위험을 평가해 드립니다.\n\n⚠️ **면책조항:** 본 결과는 정보 제공용이며 의학적 진단을 대체할 수 없습니다. 모든 결과는 전문의의 해석이 필요합니다.\n\n📊 오늘의 남은 횟수: {limit} 중 {count}",
             "select_lang": "언어를 선택하세요 / Пожалуйста, выберете язык / Please select your language:",
             "select_region": "거주 지역을 선택하세요 (WHO 표준):",
+            "region_names": {
+                "AFR": "아프리카 (AFR)",
+                "AMR": "아메리카 (AMR)",
+                "SEAR": "동남아시아 (SEAR)",
+                "EUR": "유럽 (EUR)",
+                "EMR": "동지중해 (EMR)",
+                "WPR": "서태평양 (WPR)"
+            },
             "region_unknown": "알 수 없음",
             "consent_request": "우리는 귀하의 ID나 개인 정보를 기록하지 않으며, 모든 데이터는 완전히 익명화됩니다. 이 데이터는 우리의 모델을 개선하는 데 도움이 됩니다. 저장을 동의하십니까?",
             "consent_yes": "✅ 네, 동의합니다",
@@ -483,6 +499,14 @@ LOCALIZATION = {
             "welcome": "👋 **Welcome to CardioRisk AI!**\n\nI can help you assess your cardiovascular risk using an advanced AI model.\n\n⚠️ **Disclaimer:** Results are for informational purposes only and do not constitute medical advice. All results must be interpreted by a physician.\n\n📊 Available today: {count} of {limit}",
             "select_lang": "Please select your language / Пожалуйста, выберете язык / 언어를 선택하세요:",
             "select_region": "Select your region (WHO standard):",
+            "region_names": {
+                "AFR": "Africa (AFR)",
+                "AMR": "Americas (AMR)",
+                "SEAR": "South-East Asia (SEAR)",
+                "EUR": "Europe (EUR)",
+                "EMR": "Eastern Mediterranean (EMR)",
+                "WPR": "Western Pacific (WPR)"
+            },
             "region_unknown": "Unknown",
             "consent_request": "We do not record your ID or personal information — everything is fully anonymized. This data helps us improve the model. Do you consent to saving?",
             "consent_yes": "✅ Yes, I consent",
