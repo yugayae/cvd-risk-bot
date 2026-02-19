@@ -96,6 +96,9 @@ async def process_region(message: types.Message, state: FSMContext):
     )
     
     await message.answer(welcome_text, parse_mode="Markdown", reply_markup=keyboard)
+    
+    # Clear state so that menu buttons (text) are handled by global handlers
+    await state.set_state(None)
 
 @router.message(Command("assess"))
 async def cmd_assess(message: types.Message, state: FSMContext):
