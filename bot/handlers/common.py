@@ -11,24 +11,31 @@ router = Router()
 @router.message(Command("start"))
 async def cmd_start(message: types.Message, state: FSMContext):
     logging.info(f"HANDLER: cmd_start triggered for user {message.from_user.id}")
-    await state.clear()
-    
-    # Language Selection Keyboard
-    keyboard = types.ReplyKeyboardMarkup(
-        keyboard=[
-            [types.KeyboardButton(text="Русский 🇷🇺")],
-            [types.KeyboardButton(text="English 🇺🇸")],
-            [types.KeyboardButton(text="한국어 🇰🇷")]
-        ],
-        resize_keyboard=True,
-        one_time_keyboard=True
-    )
-    
-    await message.answer(
-        "Please select your language / Пожалуйста, выберите язык / 언어를 선택하세요:",
-        reply_markup=keyboard
-    )
-    await state.set_state(RiskForm.language)
+    try:
+        await state.clear()
+        logging.info("HANDLER: state cleared")
+        
+        # Language Selection Keyboard
+        keyboard = types.ReplyKeyboardMarkup(
+            keyboard=[
+                [types.KeyboardButton(text="Русский 🇷🇺")],
+                [types.KeyboardButton(text="English 🇺🇸")],
+                [types.KeyboardButton(text="한국어 🇰🇷")]
+            ],
+            resize_keyboard=True,
+            one_time_keyboard=True
+        )
+        
+        logging.info("HANDLER: attempting to send message")
+        await message.answer(
+            "Please select your language / Пожалуйста, выберите язык / 언어를 선택하세요:",
+            reply_markup=keyboard
+        )
+        logging.info("HANDLER: message sent successfully")
+        await state.set_state(RiskForm.language)
+        logging.info("HANDLER: state set to language")
+    except Exception as e:
+        logging.error(f"HANDLER ERROR: {e}", exc_info=True)
 
 @router.message(RiskForm.language)
 async def process_language(message: types.Message, state: FSMContext):
