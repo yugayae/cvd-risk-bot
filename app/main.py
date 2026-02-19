@@ -67,6 +67,11 @@ async def on_startup():
     webhook_url = os.getenv("WEBHOOK_URL")
     if webhook_url:
         logging.info(f"Setting webhook to {webhook_url}")
+        
+        # Initialize Bot info (so Command filters work correctly)
+        bot_info = await bot.get_me()
+        logging.info(f"Bot initialized: @{bot_info.username}")
+        
         await bot.set_webhook(
             url=webhook_url, 
             secret_token=TELEGRAM_SECRET_TOKEN,
