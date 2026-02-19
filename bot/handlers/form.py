@@ -11,14 +11,6 @@ from bot.utils.user_stats import stats_manager
 logger = logging.getLogger(__name__)
 router = Router()
 
-def calculate_age_days(birth_date_str):
-    """Calculates age in days from DOB string DD.MM.YYYY"""
-    try:
-        birth_date = datetime.strptime(birth_date_str, "%d.%m.%Y")
-        delta = datetime.now() - birth_date
-        return delta.days
-    except ValueError:
-        return None
 
 # --- Helper Keyboards ---
 def get_gender_kb(lang):
@@ -84,15 +76,22 @@ async def process_birth_date(message: types.Message, state: FSMContext):
     data = await state.get_data()
     lang = data.get("language", "en")
     
-    age_days = calculate_age_days(message.text)
-    if age_days is None:
+    text = message.text.strip()
+    
+    # Strictly check for Age (integer)
+    if not text.isdigit():
+        return await message.answer(bot_i18n.get_bot_str(lang, "dob_error"))
+        
+    age_years = int(text)
+    
+    # 18-90 years check
+    if not (18 <= age_years <= 90):
         return await message.answer(bot_i18n.get_bot_str(lang, "dob_error"))
     
-    # 18-90 years check (approx)
-    if not (18 * 365 <= age_days <= 90 * 365):
-        return await message.answer(bot_i18n.t(lang, "error_form_invalid"))
+    # Calculate approximate days for compatibility if needed, or just store years
+    age_days = age_years * 365.25
     
-    await state.update_data(age_days=age_days, age_years=int(age_days / 365.25))
+    await state.update_data(age_days=age_days, age_years=age_years)
     await state.set_state(RiskForm.gender)
     
     gender_prompt = bot_i18n.t(lang, "shap_factors", "gender", "name")
