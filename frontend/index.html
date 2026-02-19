@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI-Powered Cardiovascular Risk Assessment Tool with SHAP explainability.">
+    <title>CVD Risk Analytics | AI-Powered</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="app-header">
+        <div class="logo-container">
+            <svg class="logo-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path
+                    d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z">
+                </path>
+            </svg>
+            CardioRisk AI
+        </div>
+
+        <div class="controls">
+            <select id="lang-switcher" class="input-control" style="width: auto; padding-right: 2rem;">
+                <option value="en">English</option>
+                <option value="ru" selected>Русский</option>
+                <option value="kr">한국어</option>
+            </select>
+        </div>
+    </header>
+
+    <div class="main-layout">
+        <!-- LEFT SIDEBAR: FORM -->
+        <aside class="sidebar">
+            <form id="risk-form">
+                <!-- Section: Demographics -->
+                <div class="form-section">
+                    <div class="form-section-title" data-i18n="section_demographics">Demographics</div>
+
+                    <div class="form-group">
+                        <label data-i18n="label_region">Region (WHO)</label>
+                        <select class="input-control" name="region" id="region-select" required>
+                            <option value="EUR">EUR (Europe)</option>
+                            <option value="AFR">AFR (Africa)</option>
+                            <option value="AMR">AMR (Americas)</option>
+                            <option value="SEAR">SEAR (South-East Asia)</option>
+                            <option value="EMR">EMR (Eastern Mediterranean)</option>
+                            <option value="WPR">WPR (Western Pacific)</option>
+                            <option value="Unknown" data-i18n="region_unknown">Unknown</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label data-i18n="label_dob">Date of Birth</label>
+                        <input type="date" class="input-control" name="dob" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label data-i18n="label_gender">Gender</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="gender_m" name="gender" value="2" checked>
+                                <label for="gender_m" data-i18n="option_male">Male</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="gender_f" name="gender" value="1">
+                                <label for="gender_f" data-i18n="option_female">Female</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group-row">
+                        <div>
+                            <label data-i18n="label_height">Height (cm)</label>
+                            <input type="number" class="input-control" id="height" name="height" value="175" min="100"
+                                max="250" required>
+                        </div>
+                        <div>
+                            <label data-i18n="label_weight">Weight (kg)</label>
+                            <input type="number" class="input-control" id="weight" name="weight" value="70" step="0.1"
+                                min="30" max="250" required>
+                        </div>
+                    </div>
+                    <div id="live-bmi-container" class="live-bmi-sidebar" style="display: none;">
+                        <span data-i18n="label_bmi">BMI</span>: <span id="live-bmi-value">--</span>
+                    </div>
+                </div>
+
+                <!-- Section: Medical Indicators -->
+                <div class="form-section">
+                    <div class="form-section-title" data-i18n="section_indicators">Medical Indicators</div>
+
+                    <div class="form-group">
+                        <label data-i18n="label_systolic">Systolic BP (mmHg)</label>
+                        <input type="number" class="input-control" name="ap_hi" value="120" min="60" max="240" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label data-i18n="label_diastolic">Diastolic BP (mmHg)</label>
+                        <input type="number" class="input-control" name="ap_lo" value="80" min="40" max="160" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label data-i18n="label_cholesterol">Cholesterol</label>
+                        <select class="input-control" name="cholesterol" id="cholesterol-select" required>
+                            <option value="1" data-i18n="option_normal">Normal</option>
+                            <option value="2" data-i18n="option_above_normal">Above Normal</option>
+                            <option value="3" data-i18n="option_high">High</option>
+                        </select>
+                        <div class="hint-container" id="cholesterol-hint">
+                            <i class="hint-icon">ⓘ</i>
+                            <span class="hint-text"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label data-i18n="label_glucose">Glucose</label>
+                        <select class="input-control" name="gluc" id="gluc-select" required>
+                            <option value="1" data-i18n="option_normal">Normal</option>
+                            <option value="2" data-i18n="option_above_normal">Above Normal</option>
+                            <option value="3" data-i18n="option_high">High</option>
+                        </select>
+                        <div class="hint-container" id="gluc-hint">
+                            <i class="hint-icon">ⓘ</i>
+                            <span class="hint-text"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: Lifestyle -->
+                <div class="form-section">
+                    <div class="form-section-title" data-i18n="section_lifestyle">Lifestyle</div>
+
+                    <div class="form-group">
+                        <label data-i18n="label_smoking">Smoking</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="smoke_n" name="smoke" value="0" checked>
+                                <label for="smoke_n" data-i18n="option_no">No</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="smoke_y" name="smoke" value="1">
+                                <label for="smoke_y" data-i18n="option_yes">Yes</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label data-i18n="label_alcohol">Alcohol Intake</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="alco_n" name="alco" value="0" checked>
+                                <label for="alco_n" data-i18n="option_no">No</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="alco_y" name="alco" value="1">
+                                <label for="alco_y" data-i18n="option_yes">Yes</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label data-i18n="label_physical_activity">Physical Activity</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="active_y" name="active" value="1" checked>
+                                <label for="active_y" data-i18n="option_yes">Yes</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="active_n" name="active" value="0">
+                                <label for="active_n" data-i18n="option_no">No</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit" id="submit-btn">
+                    <div class="spinner" id="spinner"></div>
+                    <span class="btn-text" id="btn-text" data-i18n="btn_calculate">Calculate Risk</span>
+                </button>
+            </form>
+        </aside>
+
+        <!-- RIGHT DASHBOARD -->
+        <main class="dashboard-area" id="dashboard-area">
+
+            <!-- Empty State -->
+            <div class="empty-state" id="empty-state">
+                <div class="empty-icon">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+                        <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+                    </svg>
+                </div>
+                <h2 data-i18n="results_title">Results Dashboard</h2>
+                <p data-i18n="results_empty">Fill out the patient details in the sidebar to generate a comprehensive AI
+                    risk assessment.</p>
+            </div>
+
+            <!-- Results Container -->
+            <div id="results-container" class="results-grid" style="display: none;">
+
+                <!-- 1. Main Score Card -->
+                <div class="card card-score" id="main-card">
+                    <div class="score-content">
+                        <div>
+                            <div class="score-value" id="risk-percent">--%</div>
+                        </div>
+                        <div class="score-details">
+                            <h3 id="risk-category">--</h3>
+                            <p data-i18n="results_risk_probability">Probability of CVD Event</p>
+                            <div id="bmi-label"
+                                style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-muted);">
+                                <span data-i18n="results_bmi">Patient BMI</span>: <span id="bmi-value"
+                                    style="font-weight: 600; color: var(--text-main);">--</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Doughnut Chart Canvas -->
+                    <div style="width: 140px; height: 140px; position: relative;">
+                        <canvas id="gaugeChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- 2. Risk Profile (Radar) -->
+                <div class="card card-chart-half" style="animation-delay: 0.1s">
+                    <div class="card-header">
+                        <span class="card-title" data-i18n="results_patient_profile">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                <path
+                                    d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+                                </path>
+                            </svg>
+                            Patient Profile
+                        </span>
+                    </div>
+                    <div style="position: relative; height: 320px;">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- 3. Key Factors (Bar - SHAP) -->
+                <div class="card card-chart-half" style="animation-delay: 0.2s">
+                    <div class="card-header">
+                        <span class="card-title" data-i18n="results_key_factors">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="20" x2="12" y2="10"></line>
+                                <line x1="18" y1="20" x2="18" y2="4"></line>
+                                <line x1="6" y1="20" x2="6" y2="16"></line>
+                            </svg>
+                            Key Drivers (AI Explanation)
+                        </span>
+                    </div>
+                    <div style="position: relative; height: 320px;">
+                        <canvas id="shapChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- 4. Recommendations -->
+                <div class="card card-text-full" style="animation-delay: 0.3s">
+                    <div class="card-header">
+                        <span class="card-title" data-i18n="results_recommendations">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path
+                                    d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3">
+                                </path>
+                            </svg>
+                            Clinical Recommendations
+                        </span>
+                    </div>
+                    <div id="recommendation-content">
+                        <p style="color: var(--text-muted);">Analysis complete.</p>
+                    </div>
+                </div>
+
+                <!-- 5. CDSS Mandatory Disclaimer -->
+                <div class="card card-text-full cdss-disclaimer-card" style="animation-delay: 0.35s">
+                    <div class="disclaimer-content" id="clinical-disclaimer-box">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- 5. Export Actions -->
+                <div class="card card-text-full export-actions"
+                    style="grid-column: span 12; animation-delay: 0.4s; display: flex; gap: 1rem; justify-content: flex-end;">
+                    <!-- PDF button removed: Print covers Save to PDF functionality -->
+                    <button id="export-csv-btn" class="btn-secondary"
+                        style="background: #e8f5e9; color: #2e7d32; border: 1px solid #2e7d32; padding: 0.75rem 1.25rem; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 0.5rem;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="12" y1="18" x2="12" y2="12"></line>
+                            <line x1="9" y1="15" x2="15" y2="15"></line>
+                        </svg>
+                        <span>CSV</span>
+                    </button>
+                    <button id="export-json-btn" class="btn-secondary"
+                        style="background: #f3e5f5; color: #7b1fa2; border: 1px solid #7b1fa2; padding: 0.75rem 1.25rem; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 0.5rem;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 18l6-6-6-6"></path>
+                            <path d="M8 6l-6 6 6 6"></path>
+                        </svg>
+                        <span>JSON</span>
+                    </button>
+                    <button id="print-report-btn" class="btn-primary"
+                        style="background: var(--primary); color: white; border: none; padding: 0.75rem 1.25rem; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 0.5rem;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                            <rect x="6" y="14" width="12" height="8"></rect>
+                        </svg>
+                        <span data-i18n="btn_print">Print</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Consent Modal -->
+    <div id="consent-modal" class="modal" style="display: none;">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 data-i18n="modal_consent_title">Согласие на обработку данных</h3>
+            </div>
+            <div class="modal-body">
+                <p data-i18n="modal_consent_message">
+                    Ваши анонимные данные помогут улучшить точность модели. Никакие личные идентификаторы не
+                    сохраняются.
+                    <br><br>
+                    Разрешаете ли вы сохранить результаты этой оценки в нашу базу данных?
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button id="consent-decline" class="btn-secondary" data-i18n="btn_decline">Нет, не сохранять</button>
+                <button id="consent-accept" class="btn-primary" data-i18n="btn_accept">Да, согласен</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Template for Printing -->
+    <div id="medical-report-template" style="display: none;"></div>
+
+    <!-- PDF handled via Print Engine -->
+
+    <!-- Scripts -->
+    <script type="module">
+        import './js/i18n.js';
+        import './js/api-service.js';
+        import './js/dashboard.js';
+    </script>
+
+</body>
+
+</html>

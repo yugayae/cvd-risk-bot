@@ -1,0 +1,56 @@
+[
+    {
+        "factor": "Smoking",
+        "base_val": 0,
+        "test_val": 1,
+        "base_risk": 0.20436951828716607,
+        "test_risk": 0.17035563005273213,
+        "delta": -0.03401388823443394,
+        "is_paradox": true
+    },
+    {
+        "factor": "Glucose (High)",
+        "base_val": 1,
+        "test_val": 3,
+        "base_risk": 0.20436951828716607,
+        "test_risk": 0.2336303627127733,
+        "delta": 0.029260844425607224,
+        "is_paradox": false
+    },
+    {
+        "factor": "Cholesterol (High)",
+        "base_val": 1,
+        "test_val": 3,
+        "base_risk": 0.20436951828716607,
+        "test_risk": 0.6789937554908236,
+        "delta": 0.47462423720365754,
+        "is_paradox": false
+    },
+    {
+        "factor": "Physical Activity (Inactive)",
+        "base_val": 1,
+        "test_val": 0,
+        "base_risk": 0.20436951828716607,
+        "test_risk": 0.24887624129333658,
+        "delta": 0.04450672300617051,
+        "is_paradox": false
+    },
+    {
+        "factor": "Alcohol",
+        "base_val": 0,
+        "test_val": 1,
+        "base_risk": 0.20436951828716607,
+        "test_risk": 0.16114024816430542,
+        "delta": -0.04322927012286065,
+        "is_paradox": true
+    },
+    {
+        "factor": "Systolic BP (150)",
+        "base_val": 120,
+        "test_val": 150,
+        "base_risk": 0.20436951828716607,
+        "test_risk": 0.838496874537733,
+        "delta": 0.6341273562505669,
+        "is_paradox": false
+    }
+]
