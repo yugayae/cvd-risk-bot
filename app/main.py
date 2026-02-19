@@ -1,7 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
+from aiogram import types
 import os
 from dotenv import load_dotenv
 
@@ -52,13 +53,60 @@ model = load_model()
 shap_explainer = create_shap_explainer(model)
 model_metrics = get_model_performance_metrics()
 
-# --- Prediction Logic & Endpoints ---
+# -------------------------
+# TELEGRAM BOT INTEGRATION
+# -------------------------
+from app.bot_instance import bot, dp
+import app.bot_setup  # Registers routers
 
+WEBHOOK_PATH = "/webhook"
+TELEGRAM_SECRET_TOKEN = os.getenv("TELEGRAM_SECRET_TOKEN")
+
+@app.on_event("startup")
+async def on_startup():
+    webhook_url = os.getenv("WEBHOOK_URL")
+    if webhook_url:
+        logging.info(f"Setting webhook to {webhook_url}")
+        await bot.set_webhook(
+            url=webhook_url, 
+            secret_token=TELEGRAM_SECRET_TOKEN,
+            allowed_updates=["message", "callback_query"]
+        )
+    else:
+        logging.warning("WEBHOOK_URL not set. Bot will not receive updates unless polling is used separately.")
+
+@app.on_event("shutdown")
+async def on_shutdown():
+    logging.info("Deleting webhook")
+    await bot.delete_webhook()
+    await bot.session.close()
+
+@app.post(WEBHOOK_PATH)
+async def telegram_webhook(request: Request):
+    # Verify Secret Token if verified
+    if TELEGRAM_SECRET_TOKEN:
+        token = request.headers.get("X-Telegram-Bot-Api-Secret-Token")
+        if token != TELEGRAM_SECRET_TOKEN:
+            raise HTTPException(status_code=403, detail="Invalid Secret Token")
+
+    try:
+        update_data = await request.json()
+        update = types.Update(**update_data)
+        await dp.feed_update(bot, update)
+        return {"ok": True}
+    except Exception as e:
+        logging.error(f"Error in webhook: {e}")
+        # Return 200 to OK Telegram even on error to prevent retry loops for bad updates
+        return {"ok": False, "error":str(e)}
+
+# -------------------------
+# HEALTH CHECK
+# -------------------------
 @app.get("/health")
 @app.get("/api/health")
 def health_check():
     """Provides a basic health check endpoint."""
-    return {"status": "ok"}
+    return {"status": "ok", "service": "CVD Risk API", "version": "1.0.0"}
 
 @app.get("/metrics")
 @app.get("/api/metrics")
