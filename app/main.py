@@ -91,6 +91,7 @@ async def telegram_webhook(request: Request):
 
     try:
         update_data = await request.json()
+        logging.info(f"Received webhook update: {update_data.get('update_id')}")
         update = types.Update(**update_data)
         await dp.feed_update(bot, update)
         return {"ok": True}

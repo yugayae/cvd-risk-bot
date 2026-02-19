@@ -1,7 +1,10 @@
 from app.bot_instance import dp
 from bot.handlers import common, form
 
+import logging
+
 # Register Routers
 # This execution happens on import
 dp.include_router(common.router)
 dp.include_router(form.router)
+logging.info(f"Bot routers registered: {len(dp.sub_routers)} routers active.")
