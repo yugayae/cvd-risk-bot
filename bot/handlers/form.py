@@ -353,13 +353,25 @@ async def process_active(message: types.Message, state: FSMContext):
             f"**{factors_loc}:**\n"
         )
         
-        for explanation in result.get('clinical_explanation', [])[:3]:
-             direction = "⬆️" if explanation['raw_direction'] == "increases" else "⬇️"
-             response_text += f"- {direction} **{explanation['factor']}**: {explanation['clinical_note']}\n"
+        recommendations = []
+        for explanation in result.get('clinical_explanation', []):
+             if explanation['raw_direction'] == "increases":
+                 direction = "⬆️"
+                 response_text += f"- {direction} **{explanation['factor']}**: {explanation['clinical_note']}\n"
+                 
+                 # Look for a specific recommendation for this factor
+                 rec = bot_i18n.t(lang, "factor_recommendations", explanation['key'])
+                 if rec and rec not in recommendations:
+                     recommendations.append(rec)
 
         rec_loc = bot_i18n.t(lang, "results_recommendations")
-        recommendation = result.get('risk_card', {}).get('recommendation') or bot_i18n.t(lang, f"rec_{risk_cat}")
-        response_text += f"\n💡 **{rec_loc}:** {recommendation}"
+        
+        if recommendations:
+            recommendation_text = "\n".join([f"• {r}" for r in recommendations])
+        else:
+            recommendation_text = result.get('risk_card', {}).get('recommendation') or bot_i18n.get_bot_str(lang, "default_recommendation")
+            
+        response_text += f"\n💡 **{rec_loc}:**\n{recommendation_text}"
         
         # Add Disclaimer
         disclaimer = bot_i18n.t(lang, "disclaimer")
