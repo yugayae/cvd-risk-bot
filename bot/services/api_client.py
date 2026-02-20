@@ -19,7 +19,8 @@ async def get_risk_prediction(data: dict) -> dict:
                 patient=patient_input,
                 model=global_state.model,
                 shap_explainer=global_state.shap_explainer,
-                lang=data.get("ui_language", "en")
+                lang=data.get("ui_language", "en"),
+                model_metrics=global_state.model_metrics
             )
             # Return as dict (compatible with API response structure)
             return result.model_dump()
