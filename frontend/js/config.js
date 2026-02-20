@@ -7,7 +7,9 @@ export const CONFIG = {
     // API Configuration
     api: {
         baseUrl: typeof window !== 'undefined'
-            ? `${window.location.protocol}//${window.location.hostname}:8000`
+            ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                ? `http://${window.location.hostname}:8000`
+                : window.location.origin)
             : 'http://localhost:8000',
         timeout: 30000, // 30 seconds
         retryAttempts: 2,
