@@ -354,13 +354,35 @@ async def process_active(message: types.Message, state: FSMContext):
         )
         
         recommendations = []
+        
+        # Deduplication map (syndrome -> raw features)
+        FACTOR_HIERARCHY = {
+            "high_bp": ["ap_hi", "ap_lo"],
+            "obesity": ["bmi"],
+            "cholesterol_high": ["cholesterol", "cholesterol_attention"],
+            "cholesterol_attention": ["cholesterol"]
+        }
+        
+        seen_base_factors = set()
+        
         for explanation in result.get('clinical_explanation', []):
              if explanation['raw_direction'] == "increases":
+                 key = explanation['key']
+                 
+                 # Check if this raw feature was already covered by a syndrome
+                 if key in seen_base_factors:
+                     continue
+                 
+                 # Register what this feature covers
+                 seen_base_factors.add(key)
+                 if key in FACTOR_HIERARCHY:
+                     seen_base_factors.update(FACTOR_HIERARCHY[key])
+                 
                  direction = "⬆️"
                  response_text += f"- {direction} **{explanation['factor']}**: {explanation['clinical_note']}\n"
                  
                  # Look for a specific recommendation for this factor
-                 rec = bot_i18n.t(lang, "factor_recommendations", explanation['key'])
+                 rec = bot_i18n.t(lang, "factor_recommendations", key)
                  if rec and rec not in recommendations:
                      recommendations.append(rec)
 
