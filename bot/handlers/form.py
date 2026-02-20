@@ -154,6 +154,10 @@ async def process_weight(message: types.Message, state: FSMContext):
     await state.update_data(weight=weight, bmi=bmi)
     await state.set_state(RiskForm.ap_hi)
     
+    # Notify user of their calculated BMI
+    bmi_text = bot_i18n.t(lang, "bmi_result").format(bmi=bmi)
+    await message.answer(bmi_text)
+    
     ap_hi_prompt = bot_i18n.t(lang, "shap_factors", "ap_hi", "name")
     await message.answer(f"5. {ap_hi_prompt} (mmHg):")
 
@@ -357,6 +361,11 @@ async def process_active(message: types.Message, state: FSMContext):
         recommendation = result.get('risk_card', {}).get('recommendation') or bot_i18n.t(lang, f"rec_{risk_cat}")
         response_text += f"\n💡 **{rec_loc}:** {recommendation}"
         
+        # Add Disclaimer
+        disclaimer = bot_i18n.t(lang, "disclaimer")
+        if disclaimer:
+             response_text += f"\n\n⚠️ **Disclaimer**: {disclaimer}"
+             
         await message.answer(response_text, parse_mode="Markdown")
         
         # Save result to state
