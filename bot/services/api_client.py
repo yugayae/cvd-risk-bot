@@ -23,7 +23,7 @@ async def get_risk_prediction(data: dict) -> dict:
                 model_metrics=global_state.model_metrics
             )
             # Return as dict (compatible with API response structure)
-            return result.model_dump()
+            return result
         except Exception as e:
             print(f"Internal Prediction Error: {e}")
             return {"error": str(e)}
