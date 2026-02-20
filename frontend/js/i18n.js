@@ -70,6 +70,21 @@ const TRANSLATIONS = {
         risk_cvd: "Probability of CVD",
 
         // Recommendations
+        default_recommendation: "It is recommended to maintain your current healthy lifestyle in accordance with WHO guidelines.",
+        factor_recommendations: {
+            "smoke": "Quitting smoking is one of the most effective ways to reduce cardiovascular risk.",
+            "alco": "It is recommended to limit alcohol consumption.",
+            "active": "Regular physical activity reduces cardiovascular risk.",
+            "bmi": "Weight reduction to normal BMI values can lower cardiovascular risk.",
+            "obesity": "Weight reduction to normal BMI values can lower cardiovascular risk.",
+            "ap_hi": "Blood pressure control and medical consultation for therapy are recommended.",
+            "ap_lo": "Blood pressure control and medical consultation for therapy are recommended.",
+            "high_bp": "Blood pressure control and medical consultation for therapy are recommended.",
+            "cholesterol": "A lipid-lowering diet and cholesterol level monitoring are recommended.",
+            "cholesterol_high": "A lipid-lowering diet and cholesterol level monitoring are recommended.",
+            "cholesterol_attention": "A lipid-lowering diet and cholesterol level monitoring are recommended.",
+            "gluc": "Blood glucose control and specialist consultation are recommended."
+        },
         rec_low: "Indicators are normal. Continue maintaining a healthy lifestyle, monitor cholesterol levels, and stay active.",
         rec_moderate: "Warning: elevated risk observed. Review your diet, reduce salt intake, and consult with a cardiologist.",
         rec_high: "CRITICAL LEVEL. Urgent visit to a doctor is strongly recommended for detailed examination and treatment.",
@@ -196,6 +211,21 @@ const TRANSLATIONS = {
         risk_cvd: "Вероятность ССЗ заболеваний",
 
         // Рекомендации
+        default_recommendation: "Рекомендуется придерживаться текущего здорового образа жизни в соответствии с рекомендациями ВОЗ.",
+        factor_recommendations: {
+            "smoke": "Отказ от курения является одним из наиболее эффективных способов снижения сердечно-сосудистого риска.",
+            "alco": "Рекомендуется ограничить потребление алкоголя.",
+            "active": "Регулярная физическая активность снижает сердечно-сосудистый риск.",
+            "bmi": "Снижение массы тела до нормальных значений ИМТ может снизить сердечно-сосудистый риск.",
+            "obesity": "Снижение массы тела до нормальных значений ИМТ может снизить сердечно-сосудистый риск.",
+            "ap_hi": "Рекомендуется контроль артериального давления и консультация врача по вопросам терапии.",
+            "ap_lo": "Рекомендуется контроль артериального давления и консультация врача по вопросам терапии.",
+            "high_bp": "Рекомендуется контроль артериального давления и консультация врача по вопросам терапии.",
+            "cholesterol": "Рекомендуется соблюдение гиполипидемической диеты и контроль уровня холестерина.",
+            "cholesterol_high": "Рекомендуется соблюдение гиполипидемической диеты и контроль уровня холестерина.",
+            "cholesterol_attention": "Рекомендуется соблюдение гиполипидемической диеты и контроль уровня холестерина.",
+            "gluc": "Рекомендуется контроль уровня глюкозы и консультация специалиста."
+        },
         rec_low: "Показатели в норме. Продолжайте вести здоровый образ жизни, следите за уровнем холестерина и поддерживайте активность.",
         rec_moderate: "Внимание: наблюдается повышенный риск. Рекомендуется пересмотреть диету, сократить потребление соли и проконсультироваться с кардиологом.",
         rec_high: "КРИТИЧЕСКИЙ УРОВЕНЬ. Настоятельно рекомендуется немедленно обратиться к врачу для детального обследования и назначения терапии.",
@@ -323,6 +353,21 @@ const TRANSLATIONS = {
         risk_cvd: "심혈관질환 확률",
 
         // 권장사항
+        default_recommendation: "WHO 권장 사항에 따라 현재의 건강한 생활 습관을 유지하는 것이 권장됩니다.",
+        factor_recommendations: {
+            "smoke": "금연은 심혈관 위험을 줄이는 가장 효과적인 방법 중 하나입니다.",
+            "alco": "알코올 섭취를 제한하는 것이 권장됩니다.",
+            "active": "규칙적인 신체 활동은 심혈관 위험을 낮춥니다.",
+            "bmi": "체중을 정상 BMI 범위로 줄이면 심혈관 위험을 낮출 수 있습니다.",
+            "obesity": "체중을 정상 BMI 범위로 줄이면 심혈관 위험을 낮출 수 있습니다.",
+            "ap_hi": "혈압 조절 및 치료에 대한 의사 상담이 권장됩니다.",
+            "ap_lo": "혈압 조절 및 치료에 대한 의사 상담이 권장됩니다.",
+            "high_bp": "혈압 조절 및 치료에 대한 의사 상담이 권장됩니다.",
+            "cholesterol": "지질저하 식단을 따르고 콜레스테롤 수치를 관리하는 것이 권장됩니다.",
+            "cholesterol_high": "지질저하 식단을 따르고 콜레스테롤 수치를 관리하는 것이 권장됩니다.",
+            "cholesterol_attention": "지질저하 식단을 따르고 콜레스테롤 수치를 관리하는 것이 권장됩니다.",
+            "gluc": "혈당 수치를 관리하고 전문의와 상담하는 것이 권장됩니다."
+        },
         rec_low: "지표가 정상입니다. 건강한 생활 습관을 유지하고 콜레스테롤 수치를 모니터링하며 활동을 계속하세요.",
         rec_moderate: "경고: 상승된 위험이 관찰되었습니다. 식단을 검토하고 염분 섭취를 줄이며 심장 전문의와 상담하세요.",
         rec_high: "심각한 수준입니다. 상세한 검사와 치료를 위해 즉시 의사를 방문할 것을 강력히 권장합니다.",

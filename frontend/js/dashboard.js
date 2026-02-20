@@ -377,11 +377,15 @@ export class Dashboard {
         // Render Recommendations (Second Opinion)
         const recContent = document.getElementById('recommendation-content');
         if (recContent) {
-            recContent.innerHTML = `
-                <div class="recommendation-box" style="border-left: 4px solid ${color}">
-                    <p>${i18n.t('rec_' + riskCategory)}</p>
-                </div>
-            `;
+            const recommendations = [];
+            const FACTOR_HIERARCHY = {
+                "high_bp": ["ap_hi", "ap_lo"],
+                "obesity": ["bmi"],
+                "cholesterol_high": ["cholesterol", "cholesterol_attention"],
+                "cholesterol_attention": ["cholesterol"]
+            };
+            const seenBaseFactors = new Set();
+            let hasClinicalExplanations = false;
 
             // Add clinical explanations if available
             if (data.clinical_explanation && data.clinical_explanation.length > 0) {
@@ -396,14 +400,54 @@ export class Dashboard {
                 ul.appendChild(header);
 
                 data.clinical_explanation.forEach(item => {
-                    const li = document.createElement('li');
-                    li.style.marginBottom = '0.4rem';
-                    li.style.fontSize = '0.9rem';
-                    li.innerHTML = `<span style="font-weight:600; color:${color}">${item.factor}</span>: ${item.clinical_note}`;
-                    ul.appendChild(li);
+                    if (item.raw_direction === "increases") {
+                        const key = item.key;
+
+                        // Check if this raw feature was already covered by a syndrome
+                        if (seenBaseFactors.has(key)) return;
+
+                        // Register what this feature covers
+                        seenBaseFactors.add(key);
+                        if (FACTOR_HIERARCHY[key]) {
+                            FACTOR_HIERARCHY[key].forEach(f => seenBaseFactors.add(f));
+                        }
+
+                        hasClinicalExplanations = true;
+
+                        const li = document.createElement('li');
+                        li.style.marginBottom = '0.4rem';
+                        li.style.fontSize = '0.9rem';
+                        li.innerHTML = `<span style="font-weight:600; color:${color}">${item.factor}</span>: ${item.clinical_note}`;
+                        ul.appendChild(li);
+
+                        // Look for a specific recommendation
+                        const recDict = i18n.t("factor_recommendations");
+                        if (recDict && recDict[key] && !recommendations.includes(recDict[key])) {
+                            recommendations.push(recDict[key]);
+                        }
+                    }
                 });
-                recContent.appendChild(ul);
+
+                if (hasClinicalExplanations) {
+                    recContent.appendChild(ul);
+                }
             }
+
+            // Build the recommendation string dynamically
+            let recommendationHTML = "";
+            if (recommendations.length > 0) {
+                recommendationHTML = `<ul style="margin: 0; padding-left: 1.2rem;">` +
+                    recommendations.map(r => `<li style="margin-bottom: 0.3rem;">${r}</li>`).join('') +
+                    `</ul>`;
+            } else {
+                recommendationHTML = `<p>${(data.risk_card && data.risk_card.recommendation) ? data.risk_card.recommendation : i18n.t("default_recommendation")}</p>`;
+            }
+
+            recContent.innerHTML = `
+                <div class="recommendation-box" style="border-left: 4px solid ${color}">
+                    ${recommendationHTML}
+                </div>
+            ` + recContent.innerHTML; // Append previously built list below box
         }
 
         // Render CDSS Disclaimer
