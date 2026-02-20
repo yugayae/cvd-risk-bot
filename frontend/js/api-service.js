@@ -9,22 +9,10 @@ import { getApiUrl } from './config.js';
 const API_BASE_URL = getApiUrl();
 
 /**
- * Calculate age from Date of Birth
- */
-export function calculateAge(dobString) {
-    if (!dobString) return 0;
-    const dob = new Date(dobString);
-    const diff_ms = Date.now() - dob.getTime();
-    const age_dt = new Date(diff_ms);
-    return Math.abs(age_dt.getUTCFullYear() - 1970);
-}
-
-/**
  * Transform frontend form data to backend schema
  */
 function transformFormDataToPayload(formData) {
-    const dob = formData.get('dob');
-    const age = calculateAge(dob);
+    const age = parseInt(formData.get('age_years'));
 
     return {
         age_years: age,

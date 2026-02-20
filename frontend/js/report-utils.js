@@ -32,7 +32,7 @@ function fillReportTemplate(container, data, formData) {
     // Extract patient info safely
     const getValue = (key) => (formData instanceof FormData ? formData.get(key) : formData[key]);
 
-    const dob = getValue('dob') || '—';
+    const age = getValue('age_years') || '—';
     const genderVal = getValue('gender');
     const gender = parseInt(genderVal) === 2 ? i18n.t('option_male') : i18n.t('option_female');
     const height = getValue('height') || '—';
@@ -69,7 +69,7 @@ function fillReportTemplate(container, data, formData) {
             <section class="report-section">
                 <h2>1. ${i18n.t('results_patient_profile')}</h2>
                 <table class="report-table">
-                    <tr><td>${i18n.t('label_dob')}:</td><td>${dob}</td></tr>
+                    <tr><td>${i18n.t('label_age')}:</td><td>${age}</td></tr>
                     <tr><td>${i18n.t('label_gender')}:</td><td>${gender}</td></tr>
                     <tr><td>${i18n.t('label_height')} / ${i18n.t('label_weight')}:</td><td>${height} cm / ${weight} kg</td></tr>
                     <tr><td>${i18n.t('label_bmi')}:</td><td>${bmi} kg/m²</td></tr>

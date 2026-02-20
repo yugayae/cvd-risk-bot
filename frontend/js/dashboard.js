@@ -4,7 +4,7 @@
  */
 
 import { i18n } from './i18n.js';
-import { getPrediction, healthCheck, calculateAge, logPatientData } from './api-service.js';
+import { getPrediction, healthCheck, logPatientData } from './api-service.js';
 import CONFIG, { log } from './config.js';
 import { printMedicalReport } from './report-utils.js';
 import { exportToCSV, exportToJSON } from './data-export.js';
@@ -508,8 +508,7 @@ export class Dashboard {
             const ctxRadar = document.getElementById('radarChart');
             if (!ctxRadar) return;
 
-            const dob = formData.get('dob');
-            const age = calculateAge(dob) || 45;
+            const age = parseInt(formData.get('age_years')) || 45;
 
             const ap_hi = parseInt(formData.get('ap_hi')) || 120;
             const cholesterol = parseInt(formData.get('cholesterol')) || 1;
@@ -645,7 +644,7 @@ export class Dashboard {
         if (agreed && lastResult && lastFormData) {
             const logData = {
                 region: lastFormData.get('region') || 'unknown',
-                age_years: parseInt(lastFormData.get('age_years') || calculateAge(lastFormData.get('dob'))),
+                age_years: parseInt(lastFormData.get('age_years')),
                 gender: parseInt(lastFormData.get('gender')),
                 ap_hi: parseInt(lastFormData.get('ap_hi')),
                 ap_lo: parseInt(lastFormData.get('ap_lo')),
