@@ -143,7 +143,7 @@ LOCALIZATION = {
         "results_key_factors": "Ключевые факторы риска",
         "results_recommendations": "Рекомендации",
         "bmi_result": "Ваш ИМТ (BMI): {bmi}",
-        "default_recommendation": "Проконсультируйтесь с врачом для составления индивидуального плана профилактики.",
+        "default_recommendation": "Рекомендуется придерживаться текущего здорового образа жизни в соответствии с рекомендациями ВОЗ.",
         "factor_recommendations": {
             "smoke": "Отказ от курения является одним из наиболее эффективных способов снижения сердечно-сосудистого риска.",
             "alco": "Рекомендуется ограничить потребление алкоголя.",
@@ -341,7 +341,7 @@ LOCALIZATION = {
         "results_key_factors": "주요 위험 요인",
         "results_recommendations": "권장 사항",
         "bmi_result": "당신의 BMI: {bmi}",
-        "default_recommendation": "개인 맞춤형 예방 계획을 위해 의사와 상담하세요.",
+        "default_recommendation": "WHO 권장 사항에 따라 현재의 건강한 생활 습관을 유지하는 것이 권장됩니다.",
         "factor_recommendations": {
             "smoke": "금연은 심혈관 위험을 줄이는 가장 효과적인 방법 중 하나입니다.",
             "alco": "알코올 섭취를 제한하는 것이 권장됩니다.",
@@ -540,7 +540,7 @@ LOCALIZATION = {
         "results_key_factors": "Key Risk Factors",
         "results_recommendations": "Recommendations",
         "bmi_result": "Your BMI: {bmi}",
-        "default_recommendation": "Consult a doctor for a personalized prevention plan.",
+        "default_recommendation": "It is recommended to maintain your current healthy lifestyle in accordance with WHO guidelines.",
         "factor_recommendations": {
             "smoke": "Quitting smoking is one of the most effective ways to reduce cardiovascular risk.",
             "alco": "It is recommended to limit alcohol consumption.",
