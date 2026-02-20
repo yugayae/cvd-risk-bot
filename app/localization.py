@@ -138,6 +138,11 @@ LOCALIZATION = {
             "Данный инструмент предназначен только для клинической поддержки "
             "принятия решений и не заменяет профессиональное медицинское заключение."
         ),
+        "results_title": "Результаты анализа",
+        "risk_cvd": "Вероятность ССЗ",
+        "results_key_factors": "Ключевые факторы риска",
+        "results_recommendations": "Рекомендации",
+        "bmi_result": "Ваш ИМТ (BMI): {bmi}",
         "bot": {
             "welcome": "👋 **Добро пожаловать в CardioRisk AI!**\n\nЯ помогу вам оценить риск сердечно-сосудистых заболеваний.\n\n⚠️ **Отказ от ответственности:** Результаты носят информационный характер и не являются медицинской консультацией. Все результаты должны интерпретироваться врачом.\n\n📊 Доступно сегодня: {count} из {limit}",
             "select_lang": "Пожалуйста, выберете язык / Please select your language / 언어를 선택하세요:",
@@ -316,6 +321,11 @@ LOCALIZATION = {
             "이 도구는 임상 의사 결정을 지원하기 위한 목적으로만 사용되며 "
             "전문적인 의료 조언을 대체하지 않습니다."
         ),
+        "results_title": "분석 결과",
+        "risk_cvd": "심혈관 질환 확률",
+        "results_key_factors": "주요 위험 요인",
+        "results_recommendations": "권장 사항",
+        "bmi_result": "당신의 BMI: {bmi}",
         "bot": {
             "welcome": "👋 **CardioRisk AI에 오신 것을 환영합니다!**\n\nAI를 통해 심혈관 질환 위험을 평가해 드립니다.\n\n⚠️ **면책조항:** 본 결과는 정보 제공용이며 의학적 진단을 대체할 수 없습니다. 모든 결과는 전문의의 해석이 필요합니다.\n\n📊 오늘의 남은 횟수: {limit} 중 {count}",
             "select_lang": "언어를 선택하세요 / Пожалуйста, выберете язык / Please select your language:",
@@ -495,6 +505,11 @@ LOCALIZATION = {
             "This tool is intended for clinical decision support only "
             "and does not replace professional medical advice."
         ),
+        "results_title": "Assessment Results",
+        "risk_cvd": "CVD Probability",
+        "results_key_factors": "Key Risk Factors",
+        "results_recommendations": "Recommendations",
+        "bmi_result": "Your BMI: {bmi}",
         "bot": {
             "welcome": "👋 **Welcome to CardioRisk AI!**\n\nI can help you assess your cardiovascular risk using an advanced AI model.\n\n⚠️ **Disclaimer:** Results are for informational purposes only and do not constitute medical advice. All results must be interpreted by a physician.\n\n📊 Available today: {count} of {limit}",
             "select_lang": "Please select your language / Пожалуйста, выберете язык / 언어를 선택하세요:",
