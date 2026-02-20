@@ -9,9 +9,10 @@ from app.core.logging import logger
 class PredictionService:
     """Сервис для обработки предсказаний сердечно-сосудистого риска"""
     
-    def __init__(self, model, shap_explainer):
+    def __init__(self, model, shap_explainer, model_metrics=None):
         self.model = model
         self.shap_explainer = shap_explainer
+        self.model_metrics = model_metrics
     
     async def predict(self, patient: PatientInput) -> PredictionResponse:
         """
@@ -35,7 +36,8 @@ class PredictionService:
                 patient=patient,
                 model=self.model,
                 shap_explainer=self.shap_explainer,
-                lang=lang
+                lang=lang,
+                model_metrics=self.model_metrics
             )
             
             logger.info(
