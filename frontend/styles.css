@@ -370,8 +370,68 @@ body {
     opacity: 1;
 }
 
-.btn-submit:active {
-    transform: translateY(0);
+/* Export Action Buttons */
+.export-actions {
+    grid-column: span 12;
+    animation-delay: 0.4s;
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    flex-wrap: wrap; /* Allows wrapping on small screens */
+}
+
+.btn-csv {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #2e7d32;
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-csv:hover {
+    background: #c8e6c9;
+}
+
+.btn-json {
+    background: #f3e5f5;
+    color: #7b1fa2;
+    border: 1px solid #7b1fa2;
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-json:hover {
+    background: #e1bee7;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--primary-glow);
 }
 
 /* =========================================
@@ -562,7 +622,10 @@ body {
     display: none;
 }
 
-/* Responsive */
+/* =========================================
+   6. RESPONSIVE DESIGN
+   ========================================= */
+
 @media (max-width: 1024px) {
     .main-layout {
         grid-template-columns: 1fr;
@@ -592,6 +655,68 @@ body {
         flex-direction: column;
         align-items: flex-start;
         gap: 1.5rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .app-header {
+        padding: 0 1rem;
+        height: 64px;
+    }
+
+    .logo-container {
+        font-size: 1.15rem;
+    }
+
+    .sidebar {
+        padding: 1rem;
+        gap: 1rem;
+    }
+    
+    .form-section {
+        padding: 1rem;
+    }
+
+    .form-group-row {
+        grid-template-columns: 1fr; /* Stack height and weight vertically */
+        gap: 1.25rem;
+    }
+
+    .dashboard-area {
+        padding: 1rem;
+    }
+
+    .results-grid {
+        gap: 1rem;
+    }
+
+    .card {
+        padding: 1.25rem;
+    }
+
+    .score-value {
+        font-size: 3.5rem; /* Shrink score text */
+    }
+
+    /* Stack score details and chart nicely */
+    .score-content {
+        gap: 1rem;
+        align-items: center;
+        text-align: center;
+    }
+
+    .card-score {
+        flex-direction: column; /* Move chart under text */
+        gap: 1.5rem;
+    }
+
+    /* Make buttons fully expand width on tight displays */
+    .export-actions {
+        flex-direction: column;
+    }
+
+    .btn-csv, .btn-json, .btn-primary {
+        width: 100%;
     }
 }
 
